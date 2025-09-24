@@ -1,6 +1,8 @@
 package org.jcommit.gui;
 
 import org.jcommit.Main;
+import org.jcommit.gui.center.MainViewCenterPanel;
+import org.jcommit.gui.side.MainViewSidePanel;
 
 import javax.swing.*;
 import java.awt.*;

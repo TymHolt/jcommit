@@ -1,4 +1,4 @@
-package org.jcommit.gui;
+package org.jcommit.gui.center;
 
 import javax.swing.*;
 import java.awt.*;
