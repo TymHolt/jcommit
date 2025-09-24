@@ -1,10 +1,12 @@
 package org.jcommit.gui.side;
 
+import org.jcommit.Log;
 import org.jcommit.core.Project;
 import org.jcommit.gui.GuiUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public final class MainViewSidePanel extends JPanel {
 
@@ -20,7 +22,21 @@ public final class MainViewSidePanel extends JPanel {
         final JButton addProjectButton = new JButton("Add project...");
         addProjectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         addProjectButton.addActionListener(actionEvent -> {
-            GuiUtil.popupInfo("Add project not implemented yet");
+            final JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            final int option = fileChooser.showDialog(this, "Add project");
+            if (option != JFileChooser.APPROVE_OPTION)
+                return;
+
+            final File projectFile = fileChooser.getSelectedFile();
+            if (!Project.canBeProject(projectFile)) {
+                GuiUtil.popupInfo("File can not be opened as project");
+                return;
+            }
+
+            final Project project = new Project(projectFile);
+            addProject(project);
+            Log.info("Project " + projectFile.getAbsolutePath() + " added");
         });
         add(addProjectButton, BorderLayout.PAGE_START);
 

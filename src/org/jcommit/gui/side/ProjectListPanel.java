@@ -1,6 +1,7 @@
 package org.jcommit.gui.side;
 
 import org.jcommit.core.Project;
+import org.jcommit.gui.GuiUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,18 @@ public final class ProjectListPanel extends JPanel {
         ProjectEntryRow(Project project) {
             super();
             this.project = project;
+            setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+
+            add(new JLabel(project.getFile().getName()));
+            add(Box.createHorizontalGlue());
+
+            final JButton projectMenuButton = new JButton("...");
+            projectMenuButton.addActionListener(actionEvent -> {
+                GuiUtil.popupInfo("Project menu not implemented yet");
+            });
+            add(projectMenuButton);
+
+            setMaximumSize(new Dimension(getMaximumSize().width, getPreferredSize().height));
         }
     }
 
@@ -24,14 +37,15 @@ public final class ProjectListPanel extends JPanel {
         super();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.projectEntryRows = new HashMap<>();
-
-        setBackground(Color.GREEN); // Debug
     }
 
     public void addProject(Project project) {
         final ProjectEntryRow projectEntryRow = new ProjectEntryRow(project);
         this.projectEntryRows.put(project, projectEntryRow);
         add(projectEntryRow);
+
+        revalidate();
+        repaint();
     }
 
     public void removeProject(Project project) {
@@ -40,5 +54,8 @@ public final class ProjectListPanel extends JPanel {
 
         final ProjectEntryRow projectEntryRow = this.projectEntryRows.remove(project);
         remove(projectEntryRow);
+
+        revalidate();
+        repaint();
     }
 }
