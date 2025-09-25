@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
 
-public final class ProjectListPanel extends JPanel {
+final class ProjectListPanel extends JPanel {
 
     private final MouseListener projectClickListener = new MouseAdapter() {
 
@@ -31,14 +31,14 @@ public final class ProjectListPanel extends JPanel {
     private final MainViewSidePanel sidePanel;
     private final HashMap<Project, ProjectEntryPanel> projectEntryPanels;
 
-    public ProjectListPanel(MainViewSidePanel sidePanel) {
+    ProjectListPanel(MainViewSidePanel sidePanel) {
         super();
         this.sidePanel = sidePanel;
         this.projectEntryPanels = new HashMap<>();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
     }
 
-    public void addProject(Project project) {
+    void addProject(Project project) {
         for (Project openedProject : this.projectEntryPanels.keySet()) {
             // Check if the project path is already opened
             if (project.getFile().getAbsolutePath().equals(openedProject.getFile().getAbsolutePath()))
@@ -54,7 +54,7 @@ public final class ProjectListPanel extends JPanel {
         repaint();
     }
 
-    public void removeProject(Project project) {
+    void removeProject(Project project) {
         if (!this.projectEntryPanels.containsKey(project))
             return;
 
@@ -65,12 +65,12 @@ public final class ProjectListPanel extends JPanel {
         repaint();
     }
 
-    public void showProject(Project project) {
+    void showProject(Project project) {
         for (ProjectEntryPanel projectEntryPanel : this.projectEntryPanels.values())
             projectEntryPanel.setHighlighted(projectEntryPanel.getProject() == project);
     }
 
-    public void hideProject(Project project) {
+    void hideProject(Project project) {
         if (this.projectEntryPanels.containsKey(project))
             this.projectEntryPanels.get(project).setHighlighted(false);
     }
@@ -84,7 +84,7 @@ public final class ProjectListPanel extends JPanel {
         return null;
     }
 
-    public MainViewSidePanel getSidePanel() {
+    MainViewSidePanel getSidePanel() {
         return this.sidePanel;
     }
 }

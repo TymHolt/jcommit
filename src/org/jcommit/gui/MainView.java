@@ -38,4 +38,8 @@ public final class MainView extends JFrame {
     public void hideProject(Project project) {
         this.sidePanel.hideProject(project);
     }
+
+    public void init() {
+        this.centerPanel.init();
+    }
 }
