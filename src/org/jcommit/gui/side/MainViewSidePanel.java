@@ -3,6 +3,7 @@ package org.jcommit.gui.side;
 import org.jcommit.Log;
 import org.jcommit.core.Project;
 import org.jcommit.gui.GuiUtil;
+import org.jcommit.gui.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,12 +12,14 @@ import java.io.File;
 public final class MainViewSidePanel extends JPanel {
 
     private final ProjectListPanel projectListPanel;
+    private final MainView mainView;
 
-    public MainViewSidePanel() {
+    public MainViewSidePanel(MainView mainView) {
         super();
+        this.mainView = mainView;
         setLayout(new BorderLayout());
 
-        this.projectListPanel = new ProjectListPanel();
+        this.projectListPanel = new ProjectListPanel(this);
         add(this.projectListPanel, BorderLayout.CENTER);
 
         final JButton addProjectButton = new JButton("Add project...");
@@ -53,5 +56,17 @@ public final class MainViewSidePanel extends JPanel {
 
     public void removeProject(Project project) {
         this.projectListPanel.removeProject(project);
+    }
+
+    public void showProject(Project project) {
+        this.projectListPanel.showProject(project);
+    }
+
+    public void hideProject(Project project) {
+        this.projectListPanel.hideProject(project);
+    }
+
+    public MainView getMainView() {
+        return mainView;
     }
 }

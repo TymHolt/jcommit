@@ -1,61 +1,90 @@
 package org.jcommit.gui.side;
 
 import org.jcommit.core.Project;
-import org.jcommit.gui.GuiUtil;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 
 public final class ProjectListPanel extends JPanel {
 
-    private static class ProjectEntryRow extends JPanel {
+    private final MouseListener projectClickListener = new MouseAdapter() {
 
-        final Project project;
+        @Override
+        public void mouseClicked(MouseEvent event) {
+            super.mouseClicked(event);
 
-        ProjectEntryRow(Project project) {
-            super();
-            this.project = project;
-            setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+            final Object sourceObject = event.getSource();
+            if (!(sourceObject instanceof JComponent))
+                return;
 
-            add(new JLabel(project.getFile().getName()));
-            add(Box.createHorizontalGlue());
-
-            final JButton projectMenuButton = new JButton("...");
-            projectMenuButton.addActionListener(actionEvent -> {
-                GuiUtil.popupInfo("Project menu not implemented yet");
-            });
-            add(projectMenuButton);
-
-            setMaximumSize(new Dimension(getMaximumSize().width, getPreferredSize().height));
+            if (event.getButton() == MouseEvent.BUTTON1) {
+                final Project project = getProjectByComponent((JComponent) sourceObject);
+                if (project != null)
+                    sidePanel.getMainView().showProject(project);
+            }
         }
-    }
+    };
 
-    private final HashMap<Project, ProjectEntryRow> projectEntryRows;
+    private final MainViewSidePanel sidePanel;
+    private final HashMap<Project, ProjectEntryPanel> projectEntryPanels;
 
-    public ProjectListPanel() {
+    public ProjectListPanel(MainViewSidePanel sidePanel) {
         super();
+        this.sidePanel = sidePanel;
+        this.projectEntryPanels = new HashMap<>();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        this.projectEntryRows = new HashMap<>();
     }
 
     public void addProject(Project project) {
-        final ProjectEntryRow projectEntryRow = new ProjectEntryRow(project);
-        this.projectEntryRows.put(project, projectEntryRow);
-        add(projectEntryRow);
+        for (Project openedProject : this.projectEntryPanels.keySet()) {
+            // Check if the project path is already opened
+            if (project.getFile().getAbsolutePath().equals(openedProject.getFile().getAbsolutePath()))
+                return;
+        }
+
+        final ProjectEntryPanel projectEntryPanel = new ProjectEntryPanel(project, this);
+        projectEntryPanel.addMouseListener(projectClickListener);
+        this.projectEntryPanels.put(project, projectEntryPanel);
+        add(projectEntryPanel);
 
         revalidate();
         repaint();
     }
 
     public void removeProject(Project project) {
-        if (!this.projectEntryRows.containsKey(project))
+        if (!this.projectEntryPanels.containsKey(project))
             return;
 
-        final ProjectEntryRow projectEntryRow = this.projectEntryRows.remove(project);
-        remove(projectEntryRow);
+        final ProjectEntryPanel projectEntryPanel = this.projectEntryPanels.remove(project);
+        remove(projectEntryPanel);
 
         revalidate();
         repaint();
+    }
+
+    public void showProject(Project project) {
+        for (ProjectEntryPanel projectEntryPanel : this.projectEntryPanels.values())
+            projectEntryPanel.setHighlighted(projectEntryPanel.getProject() == project);
+    }
+
+    public void hideProject(Project project) {
+        if (this.projectEntryPanels.containsKey(project))
+            this.projectEntryPanels.get(project).setHighlighted(false);
+    }
+
+    private Project getProjectByComponent(JComponent component) {
+        for (ProjectEntryPanel projectEntryPanel : this.projectEntryPanels.values()) {
+            if (projectEntryPanel == component)
+                return projectEntryPanel.getProject();
+        }
+
+        return null;
+    }
+
+    public MainViewSidePanel getSidePanel() {
+        return this.sidePanel;
     }
 }
