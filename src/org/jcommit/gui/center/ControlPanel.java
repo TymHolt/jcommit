@@ -1,7 +1,9 @@
 package org.jcommit.gui.center;
 
 import org.jcommit.Log;
-import org.jcommit.commands.git.GitStatusCommand;
+import org.jcommit.commands.git.status.GitStatusCommand;
+import org.jcommit.commands.git.status.GitStatusFileInfo;
+import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.core.Project;
 import org.jcommit.gui.GuiUtil;
 
@@ -24,10 +26,13 @@ final class ControlPanel extends JPanel {
             final GitStatusCommand statusCommand = new GitStatusCommand(project.getFile());
 
             try {
-                final GitStatusCommand.GitStatusResult statusResult = statusCommand.execute();
+                final GitStatusResult statusResult = statusCommand.execute();
 
-                for (GitStatusCommand.GitStatusFileInfo fileInfo : statusResult.getFileInfos())
+                for (GitStatusFileInfo fileInfo : statusResult.getFileInfos())
                     Log.info(fileInfo.getChangeType().name() + " " + fileInfo.getGitFilePath());
+
+                for (String s : statusResult.getUntrackedFiles())
+                    Log.info(s);
             } catch (Exception exception) {
                 GuiUtil.popupError(exception.getMessage());
             }

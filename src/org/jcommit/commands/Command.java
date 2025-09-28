@@ -31,8 +31,11 @@ public class Command {
 
         final int EOF = -1;
         int readCharValue;
-        while ((readCharValue = outputReader.read()) != EOF)
-            outputBuilder.append((char) readCharValue);
+        while ((readCharValue = outputReader.read()) != EOF) {
+            // Discard carriage return to make parsing easier
+            if (readCharValue != '\r')
+                outputBuilder.append((char) readCharValue);
+        }
 
         final int exitCode = process.waitFor();
         return new CommandResult(outputBuilder.toString(), exitCode);

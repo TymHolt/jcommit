@@ -25,24 +25,38 @@ public final class StringParser {
         this.currentChar = string.charAt(this.index);
     }
 
-    private boolean isWhitespace(char c) {
-        return c == ' ' || c == '\t' || c == '\n' || c == '\r';
-    }
-
     public void skipWhitespace() {
         while (!isFinished()) {
-            if (!isWhitespace(this.currentChar))
+            if (!Character.isWhitespace(this.currentChar))
                 return;
 
             next();
         }
     }
 
+    public String readUntilChar(char c, boolean skipChar) {
+        final StringBuilder stringBuilder = new StringBuilder();
+
+        while (!isFinished()) {
+            if (this.currentChar == c) {
+                if (skipChar)
+                    next();
+
+                break;
+            }
+
+            stringBuilder.append(this.currentChar);
+            next();
+        }
+
+        return stringBuilder.toString();
+    }
+
     public String readUntilWhitespace() {
         final StringBuilder stringBuilder = new StringBuilder();
 
         while (!isFinished()) {
-            if (isWhitespace(this.currentChar))
+            if (Character.isWhitespace(this.currentChar))
                 break;
 
             stringBuilder.append(this.currentChar);
@@ -61,5 +75,11 @@ public final class StringParser {
         }
 
         return stringBuilder.toString();
+    }
+
+    public static boolean startsWithIgnoreWhitespace(String string, String start) {
+        final StringParser stringParser = new StringParser(string);
+        stringParser.skipWhitespace();
+        return stringParser.readUntilEnd().startsWith(start);
     }
 }
