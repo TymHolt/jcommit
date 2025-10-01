@@ -1,5 +1,6 @@
 package org.jcommit.gui.center;
 
+import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.core.Project;
 import org.jcommit.gui.MainView;
 
@@ -24,6 +25,10 @@ public final class MainViewCenterPanel extends JPanel {
 
     public void showProject(Project project) {
 
+    }
+
+    public void updateStatus(GitStatusResult gitStatusResult) {
+        this.stageControlPanel.updateStatus(gitStatusResult);
     }
 
     public void init() {

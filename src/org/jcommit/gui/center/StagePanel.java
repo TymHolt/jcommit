@@ -36,5 +36,8 @@ final class StagePanel extends JPanel {
         final JList<String> listComponent = new JList<>(listModel);
         this.currentListComponent = listComponent;
         add(listComponent, BorderLayout.CENTER);
+
+        revalidate();
+        repaint();
     }
 }

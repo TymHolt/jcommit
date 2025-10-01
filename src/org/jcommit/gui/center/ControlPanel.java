@@ -1,12 +1,5 @@
 package org.jcommit.gui.center;
 
-import org.jcommit.Log;
-import org.jcommit.commands.git.status.GitStatusCommand;
-import org.jcommit.commands.git.status.GitStatusFileInfo;
-import org.jcommit.commands.git.status.GitStatusResult;
-import org.jcommit.core.Project;
-import org.jcommit.gui.GuiUtil;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,24 +11,7 @@ final class ControlPanel extends JPanel {
 
         final JButton statusButton = new JButton("Status");
         statusButton.addActionListener(actionEvent -> {
-            final Project project = mainViewCenterPanel.getMainView().getCurrentProject();
-
-            if (project == null)
-                return;
-
-            final GitStatusCommand statusCommand = new GitStatusCommand(project.getFile());
-
-            try {
-                final GitStatusResult statusResult = statusCommand.execute();
-
-                for (GitStatusFileInfo fileInfo : statusResult.getFileInfos())
-                    Log.info(fileInfo.getChangeType().name() + " " + fileInfo.getGitFilePath());
-
-                for (String s : statusResult.getUntrackedFiles())
-                    Log.info(s);
-            } catch (Exception exception) {
-                GuiUtil.popupError(exception.getMessage());
-            }
+            mainViewCenterPanel.getMainView().status();
         });
         add(statusButton);
     }
