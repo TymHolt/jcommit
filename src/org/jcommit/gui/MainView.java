@@ -1,10 +1,8 @@
 package org.jcommit.gui;
 
-import org.jcommit.Log;
 import org.jcommit.Main;
-import org.jcommit.commands.git.status.GitStatusCommand;
-import org.jcommit.commands.git.status.GitStatusFileInfo;
 import org.jcommit.commands.git.status.GitStatusResult;
+import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.center.MainViewCenterPanel;
 import org.jcommit.gui.side.MainViewSidePanel;
@@ -14,13 +12,14 @@ import java.awt.*;
 
 public final class MainView extends JFrame {
 
+    private final Context context;
     private final MainViewSidePanel sidePanel;
     private final MainViewCenterPanel centerPanel;
-    private Project currentProject = null;
     private GitStatusResult lastStatusResult;
 
-    public MainView() {
+    public MainView(Context context) {
         super(Main.SOFTWARE_NAME + " " + Main.getVersionName());
+        this.context = context;
 
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(screenSize.width / 2, screenSize.height / 2);
@@ -36,40 +35,28 @@ public final class MainView extends JFrame {
         setVisible(true);
     }
 
-    public void showProject(Project project) {
-        this.currentProject = project;
-        this.sidePanel.showProject(project);
-        this.centerPanel.showProject(project);
+    public void notifyOpenProject(Project project) {
+        this.sidePanel.notifyOpenProject(project);
     }
 
-    public void hideProject(Project project) {
-        if (this.currentProject == project)
-            this.currentProject = null;
-
-        this.sidePanel.hideProject(project);
+    public void notifyCloseProject(Project project) {
+        this.sidePanel.notifyCloseProject(project);
     }
 
-    public void status() {
-        if (this.currentProject == null)
-            return;
+    public void notifyMakeProjectCurrent(Project project) {
+        this.sidePanel.notifyMakeProjectCurrent(project);
+    }
 
-        final GitStatusCommand statusCommand = new GitStatusCommand(this.currentProject.getFile());
+    public void notifyFetchStatus(Project project) {
+        this.centerPanel.notifyFetchStatus(project);
+    }
 
-        try {
-            final GitStatusResult statusResult = statusCommand.execute();
-            this.lastStatusResult = statusResult;
-            this.centerPanel.updateStatus(statusResult);
-        } catch (Exception exception) {
-            GuiUtil.popupError(exception.getMessage());
-        }
+    public Context getContext() {
+        return this.context;
     }
 
     public void init() {
         this.centerPanel.init();
-    }
-
-    public Project getCurrentProject() {
-        return this.currentProject;
     }
 
     public GitStatusResult getLastStatusResult() {

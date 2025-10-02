@@ -1,6 +1,6 @@
 package org.jcommit;
 
-import org.jcommit.gui.MainView;
+import org.jcommit.core.Context;
 
 public final class Main {
 
@@ -14,6 +14,6 @@ public final class Main {
 
     public static void main(String[] args) {
         Log.info(SOFTWARE_NAME + " " + getVersionName() + " started...");
-        new MainView().init();
+        new Context();
     }
 }

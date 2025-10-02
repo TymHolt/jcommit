@@ -34,8 +34,7 @@ final class ProjectEntryPanel extends JPanel {
             final JMenuItem menuItem = new JMenuItem("Close");
             menuItem.addActionListener(menuActionEvent -> {
                 final MainViewSidePanel sidePanel = this.listPanel.getSidePanel();
-                sidePanel.getMainView().hideProject(this.project);
-                sidePanel.removeProject(this.project);
+                sidePanel.getMainView().getContext().closeProject(project);
             });
             popupMenu.add(menuItem);
             popupMenu.show(sourceComponent, 0, 0);

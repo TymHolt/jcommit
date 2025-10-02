@@ -23,7 +23,7 @@ final class ProjectListPanel extends JPanel {
             if (event.getButton() == MouseEvent.BUTTON1) {
                 final Project project = getProjectByComponent((JComponent) sourceObject);
                 if (project != null)
-                    sidePanel.getMainView().showProject(project);
+                    sidePanel.getMainView().getContext().makeProjectCurrent(project);
             }
         }
     };
@@ -38,13 +38,7 @@ final class ProjectListPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
     }
 
-    void addProject(Project project) {
-        for (Project openedProject : this.projectEntryPanels.keySet()) {
-            // Check if the project path is already opened
-            if (project.getFile().getAbsolutePath().equals(openedProject.getFile().getAbsolutePath()))
-                return;
-        }
-
+    public void notifyOpenProject(Project project) {
         final ProjectEntryPanel projectEntryPanel = new ProjectEntryPanel(project, this);
         projectEntryPanel.addMouseListener(projectClickListener);
         this.projectEntryPanels.put(project, projectEntryPanel);
@@ -54,7 +48,7 @@ final class ProjectListPanel extends JPanel {
         repaint();
     }
 
-    void removeProject(Project project) {
+    public void notifyCloseProject(Project project) {
         if (!this.projectEntryPanels.containsKey(project))
             return;
 
@@ -65,14 +59,9 @@ final class ProjectListPanel extends JPanel {
         repaint();
     }
 
-    void showProject(Project project) {
+    public void notifyMakeProjectCurrent(Project project) {
         for (ProjectEntryPanel projectEntryPanel : this.projectEntryPanels.values())
             projectEntryPanel.setHighlighted(projectEntryPanel.getProject() == project);
-    }
-
-    void hideProject(Project project) {
-        if (this.projectEntryPanels.containsKey(project))
-            this.projectEntryPanels.get(project).setHighlighted(false);
     }
 
     private Project getProjectByComponent(JComponent component) {

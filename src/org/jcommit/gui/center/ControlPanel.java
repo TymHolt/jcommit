@@ -11,7 +11,7 @@ final class ControlPanel extends JPanel {
 
         final JButton statusButton = new JButton("Status");
         statusButton.addActionListener(actionEvent -> {
-            mainViewCenterPanel.getMainView().status();
+            mainViewCenterPanel.getMainView().getContext().fetchStatus();
         });
         add(statusButton);
     }

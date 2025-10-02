@@ -38,7 +38,7 @@ public final class MainViewSidePanel extends JPanel {
             }
 
             final Project project = new Project(projectFile);
-            addProject(project);
+            this.mainView.getContext().openProject(project);
             Log.info("Project " + projectFile.getAbsolutePath() + " added");
         });
         add(addProjectButton, BorderLayout.PAGE_START);
@@ -50,20 +50,16 @@ public final class MainViewSidePanel extends JPanel {
         add(settingsButton, BorderLayout.PAGE_END);
     }
 
-    public void addProject(Project project) {
-        this.projectListPanel.addProject(project);
+    public void notifyOpenProject(Project project) {
+        this.projectListPanel.notifyOpenProject(project);
     }
 
-    public void removeProject(Project project) {
-        this.projectListPanel.removeProject(project);
+    public void notifyCloseProject(Project project) {
+        this.projectListPanel.notifyCloseProject(project);
     }
 
-    public void showProject(Project project) {
-        this.projectListPanel.showProject(project);
-    }
-
-    public void hideProject(Project project) {
-        this.projectListPanel.hideProject(project);
+    public void notifyMakeProjectCurrent(Project project) {
+        this.projectListPanel.notifyMakeProjectCurrent(project);
     }
 
     public MainView getMainView() {

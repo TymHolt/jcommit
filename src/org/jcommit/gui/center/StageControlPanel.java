@@ -1,8 +1,8 @@
 package org.jcommit.gui.center;
 
-import org.jcommit.Log;
 import org.jcommit.commands.git.status.GitStatusFileInfo;
 import org.jcommit.commands.git.status.GitStatusResult;
+import org.jcommit.core.Project;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +27,8 @@ final class StageControlPanel extends JPanel {
         add(splitPane, BorderLayout.CENTER);
     }
 
-    public void updateStatus(GitStatusResult gitStatusResult) {
+    public void notifyFetchStatus(Project project) {
+        final GitStatusResult gitStatusResult = project.getStatusResult();;
         final List<String> unstagedElements = new ArrayList<>();
         final List<String> stagedElements = new ArrayList<>();
 
