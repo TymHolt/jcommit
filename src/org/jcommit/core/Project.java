@@ -28,17 +28,17 @@ public final class Project {
         return this.file.getAbsolutePath().equals(project.file.getAbsolutePath());
     }
 
-    public GitStatusResult fetchStatus() {
+    public void fetchStatus() {
         final GitStatusCommand statusCommand = new GitStatusCommand(this.file);
 
         try {
-            final GitStatusResult statusResult = statusCommand.execute();
-            this.statusResult = statusResult;
-            return statusResult;
+            this.statusResult = statusCommand.execute();
+
+            if (statusResult.getCommandResult().getExitCode() != 0)
+                throw new RuntimeException("Git exit with error code");
         } catch (Exception exception) {
             GuiUtil.popupError(exception.getMessage());
             this.statusResult = null;
-            return null;
         }
     }
 

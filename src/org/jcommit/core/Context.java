@@ -1,8 +1,12 @@
 package org.jcommit.core;
 
+import org.jcommit.commands.CommandResult;
+import org.jcommit.commands.git.add.GitAddCommand;
 import org.jcommit.commands.git.status.GitStatusResult;
+import org.jcommit.gui.GuiUtil;
 import org.jcommit.gui.MainView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +61,30 @@ public final class Context {
 
         this.currentProject.fetchStatus();
         this.mainView.notifyFetchStatus(currentProject);
+    }
+
+    public void stage(List<String> gitFilePaths) {
+        if (currentProject == null)
+            return;
+
+        final File projectFile = this.currentProject.getFile();
+        final GitAddCommand gitAddCommand = new GitAddCommand(projectFile, gitFilePaths);
+
+        try {
+            final CommandResult result = gitAddCommand.execute();
+
+            if (result.getExitCode() != 0)
+                throw new RuntimeException("Git exit with error code");
+        } catch (Exception exception) {
+            GuiUtil.popupError(exception.getMessage());
+        }
+
+        fetchStatus();
+    }
+
+    public void unstage(List<String> gitFilePaths) {
+        GuiUtil.popupInfo("Not implemented yet");
+        fetchStatus();
     }
 
     public MainView getMainView() {

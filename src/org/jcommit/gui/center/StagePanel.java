@@ -8,8 +8,9 @@ import java.util.List;
 final class StagePanel extends JPanel {
 
     private JList<String> currentListComponent;
+    private List<String> elements;
 
-    StagePanel(String title, JButton allButton) {
+    StagePanel(String title, JButton selectionButton, JButton allButton) {
         super();
         setLayout(new BorderLayout());
         this.currentListComponent = null;
@@ -18,6 +19,7 @@ final class StagePanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.LINE_AXIS));
         titlePanel.add(new JLabel(title));
         titlePanel.add(Box.createHorizontalGlue());
+        titlePanel.add(selectionButton);
         titlePanel.add(allButton);
 
         add(titlePanel, BorderLayout.PAGE_START);
@@ -37,7 +39,23 @@ final class StagePanel extends JPanel {
         this.currentListComponent = listComponent;
         add(listComponent, BorderLayout.CENTER);
 
+        this.elements = elements;
+
         revalidate();
         repaint();
+    }
+
+    List<String> getSelectedPaths() {
+        if (this.currentListComponent == null)
+            return new ArrayList<>();
+
+        return this.currentListComponent.getSelectedValuesList();
+    }
+
+    List<String> getAllPaths() {
+        if (this.elements == null)
+            return new ArrayList<>();
+
+        return this.elements;
     }
 }

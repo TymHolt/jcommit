@@ -18,7 +18,7 @@ public final class MainViewCenterPanel extends JPanel {
 
         final ControlPanel controlPanel = new ControlPanel(this);
         add(controlPanel, BorderLayout.PAGE_START);
-        stageControlPanel = new StageControlPanel();
+        stageControlPanel = new StageControlPanel(this);
         add(stageControlPanel, BorderLayout.CENTER);
     }
 

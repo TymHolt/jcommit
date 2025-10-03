@@ -15,12 +15,37 @@ final class StageControlPanel extends JPanel {
     private final StagePanel stagedPanel;
     private final JSplitPane splitPane;
 
-    StageControlPanel() {
+    StageControlPanel(MainViewCenterPanel mainViewCenterPanel) {
         super();
         setLayout(new BorderLayout());
 
-        this.unstagedPanel = new StagePanel("Unstaged", new JButton("Stage all"));
-        this.stagedPanel = new StagePanel("Staged", new JButton("Unstage all"));
+        final JButton stageButton = new JButton("Stage");
+        final JButton stageAllButton = new JButton("Stage all");
+        final JButton unstageButton = new JButton("Unstage");
+        final JButton unstageAllButton = new JButton("Unstage all");
+
+        this.unstagedPanel = new StagePanel("Unstaged", stageButton, stageAllButton);
+        this.stagedPanel = new StagePanel("Staged", unstageButton, unstageAllButton);
+
+        stageButton.addActionListener(actionEvent -> {
+            final List<String> paths = this.unstagedPanel.getSelectedPaths();
+            mainViewCenterPanel.getMainView().getContext().stage(paths);
+        });
+
+        stageAllButton.addActionListener(actionEvent -> {
+            final List<String> paths = this.unstagedPanel.getAllPaths();
+            mainViewCenterPanel.getMainView().getContext().stage(paths);
+        });
+
+        unstageButton.addActionListener(actionEvent -> {
+            final List<String> paths = this.stagedPanel.getSelectedPaths();
+            mainViewCenterPanel.getMainView().getContext().unstage(paths);
+        });
+
+        unstageAllButton.addActionListener(actionEvent -> {
+            final List<String> paths = this.stagedPanel.getAllPaths();
+            mainViewCenterPanel.getMainView().getContext().unstage(paths);
+        });
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.unstagedPanel,
             this.stagedPanel);
