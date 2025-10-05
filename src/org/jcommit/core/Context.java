@@ -2,6 +2,7 @@ package org.jcommit.core;
 
 import org.jcommit.commands.CommandResult;
 import org.jcommit.commands.git.add.GitAddCommand;
+import org.jcommit.commands.git.restore.GitRestoreCommand;
 import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.gui.GuiUtil;
 import org.jcommit.gui.MainView;
@@ -74,7 +75,7 @@ public final class Context {
             final CommandResult result = gitAddCommand.execute();
 
             if (result.getExitCode() != 0)
-                throw new RuntimeException("Git exit with error code");
+                throw new RuntimeException("Git exited with error code");
         } catch (Exception exception) {
             GuiUtil.popupError(exception.getMessage());
         }
@@ -83,7 +84,22 @@ public final class Context {
     }
 
     public void unstage(List<String> gitFilePaths) {
-        GuiUtil.popupInfo("Not implemented yet");
+        if (currentProject == null)
+            return;
+
+        final File projectFile = this.currentProject.getFile();
+        final GitRestoreCommand gitRestoreCommand = new GitRestoreCommand(projectFile,
+            gitFilePaths, true);
+
+        try {
+            final CommandResult result = gitRestoreCommand.execute();
+
+            if (result.getExitCode() != 0)
+                throw new RuntimeException("Git exited with error code");
+        } catch (Exception exception) {
+            GuiUtil.popupError(exception.getMessage());
+        }
+
         fetchStatus();
     }
 

@@ -50,7 +50,17 @@ final class GitStatusParser {
             final GitStatusChangeType changeType = GitStatusChangeType.getByPrefix(changeTypePrefix);
             stringParser.skipWhitespace();
 
-            final String gitFilePath = stringParser.readUntilEnd();
+            String gitFilePath = stringParser.readUntilEnd();
+
+            // When renamed, both old and new file path are displayed
+            final String pathSplitter = " -> ";
+            if (gitFilePath.contains(pathSplitter)) {
+                final String[] gitFilePaths = gitFilePath.split(pathSplitter);
+
+                if (gitFilePaths.length > 1) // Prevent out of bounds exception
+                    gitFilePath = gitFilePaths[1];
+            }
+
             this.fileInfos.add(new GitStatusFileInfo(gitFilePath, changeType, stagedFlag));
         }
     }
