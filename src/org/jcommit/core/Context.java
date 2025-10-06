@@ -2,6 +2,7 @@ package org.jcommit.core;
 
 import org.jcommit.commands.CommandResult;
 import org.jcommit.commands.git.add.GitAddCommand;
+import org.jcommit.commands.git.commit.GitCommitCommand;
 import org.jcommit.commands.git.restore.GitRestoreCommand;
 import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.gui.GuiUtil;
@@ -101,6 +102,29 @@ public final class Context {
         }
 
         fetchStatus();
+    }
+
+    public void commit(String message) {
+        if (currentProject == null)
+            return;
+
+        final File projectFile = this.currentProject.getFile();
+        final GitCommitCommand gitCommitCommand = new GitCommitCommand(projectFile, message);
+
+        try {
+            final CommandResult result = gitCommitCommand.execute();
+
+            if (result.getExitCode() != 0)
+                throw new RuntimeException("Git exited with error code");
+        } catch (Exception exception) {
+            GuiUtil.popupError(exception.getMessage());
+        }
+
+        fetchStatus();
+    }
+
+    private static void executeCommand() {
+
     }
 
     public MainView getMainView() {

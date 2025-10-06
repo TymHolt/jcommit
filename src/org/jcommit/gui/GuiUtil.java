@@ -15,4 +15,8 @@ public final class GuiUtil {
         Log.error("Popup: " + message);
         JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.ERROR_MESSAGE);
     }
+
+    public static String popupInput(String message) {
+        return JOptionPane.showInputDialog(message);
+    }
 }
