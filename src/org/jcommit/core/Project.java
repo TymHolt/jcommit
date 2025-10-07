@@ -1,5 +1,7 @@
 package org.jcommit.core;
 
+import org.jcommit.commands.git.branch.GitBranchAllCommand;
+import org.jcommit.commands.git.branch.GitBranchAllResult;
 import org.jcommit.commands.git.status.GitStatusCommand;
 import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.gui.GuiUtil;
@@ -14,6 +16,7 @@ public final class Project {
 
     private final File file;
     private GitStatusResult statusResult;
+    private GitBranchAllResult branchAllResult;
 
     public Project(File file) {
         if (!canBeProject(file))
@@ -22,6 +25,7 @@ public final class Project {
 
         this.file = file;
         this.statusResult = null;
+        this.branchAllResult = null;
     }
 
     public boolean isSameProject(Project project) {
@@ -42,11 +46,29 @@ public final class Project {
         }
     }
 
+    public void fetchBranches() {
+        final GitBranchAllCommand branchAllCommand = new GitBranchAllCommand(this.file);
+
+        try {
+            this.branchAllResult = branchAllCommand.execute();
+
+            if (statusResult.getCommandResult().getExitCode() != 0)
+                throw new RuntimeException("Git exit with error code");
+        } catch (Exception exception) {
+            GuiUtil.popupError(exception.getMessage());
+            this.branchAllResult = null;
+        }
+    }
+
     public File getFile() {
         return this.file;
     }
 
     public GitStatusResult getStatusResult() {
         return this.statusResult;
+    }
+
+    public GitBranchAllResult getBranchAllResult() {
+        return this.branchAllResult;
     }
 }

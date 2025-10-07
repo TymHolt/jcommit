@@ -10,7 +10,8 @@ public final class GitStatusResult {
     private final List<GitStatusFileInfo> fileInfos;
     private final List<String> untrackedFiles;
 
-    GitStatusResult(CommandResult commandResult, List<GitStatusFileInfo> fileInfos, List<String> untrackedFiles) {
+    GitStatusResult(CommandResult commandResult, List<GitStatusFileInfo> fileInfos,
+        List<String> untrackedFiles) {
         this.commandResult = commandResult;
         this.fileInfos = fileInfos;
         this.untrackedFiles = untrackedFiles;

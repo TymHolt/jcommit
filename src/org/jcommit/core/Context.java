@@ -62,7 +62,15 @@ public final class Context {
             return;
 
         this.currentProject.fetchStatus();
+        fetchBranches();
         this.mainView.notifyFetchStatus(currentProject);
+    }
+
+    public void fetchBranches() {
+        if (this.currentProject == null)
+            return;
+
+        this.currentProject.fetchBranches();
     }
 
     public void stage(List<String> gitFilePaths) {

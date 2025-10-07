@@ -34,6 +34,15 @@ public final class StringParser {
         }
     }
 
+    public void skipAllChar(char c) {
+        while (!isFinished()) {
+            if (this.currentChar != c)
+                return;
+
+            next();
+        }
+    }
+
     public String readUntilChar(char c, boolean skipChar) {
         final StringBuilder stringBuilder = new StringBuilder();
 
