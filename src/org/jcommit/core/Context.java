@@ -3,6 +3,7 @@ package org.jcommit.core;
 import org.jcommit.commands.CommandResult;
 import org.jcommit.commands.git.add.GitAddCommand;
 import org.jcommit.commands.git.commit.GitCommitCommand;
+import org.jcommit.commands.git.push.GitPushUCommand;
 import org.jcommit.commands.git.restore.GitRestoreCommand;
 import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.gui.GuiUtil;
@@ -131,8 +132,24 @@ public final class Context {
         fetchStatus();
     }
 
-    private static void executeCommand() {
+    public void push(String remote, String localBranch) {
+        if (currentProject == null)
+            return;
 
+        final File projectFile = this.currentProject.getFile();
+        final GitPushUCommand gitPushUCommand = new GitPushUCommand(projectFile, remote,
+            localBranch);
+
+        try {
+            final CommandResult result = gitPushUCommand.execute();
+
+            if (result.getExitCode() != 0)
+                throw new RuntimeException("Git exited with error code");
+        } catch (Exception exception) {
+            GuiUtil.popupError(exception.getMessage());
+        }
+
+        fetchStatus();
     }
 
     public MainView getMainView() {

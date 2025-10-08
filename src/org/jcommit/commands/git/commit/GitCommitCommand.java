@@ -17,7 +17,7 @@ public final class GitCommitCommand {
     }
 
     public CommandResult execute() throws IOException, InterruptedException {
-        final String[] arguments = {"git", "commit", "-m", '"' + message + '"'};
+        final String[] arguments = {"git", "commit", "-m", message};
         final Command command = new Command(this.executionPath, arguments);
         return command.execute();
     }

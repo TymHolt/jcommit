@@ -7,6 +7,8 @@ import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.gui.GuiUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class Project {
 
@@ -70,5 +72,27 @@ public final class Project {
 
     public GitBranchAllResult getBranchAllResult() {
         return this.branchAllResult;
+    }
+
+    // TODO Should be fetched via command
+    public List<String> getRemotes() {
+        final List<String> remotes = new ArrayList<>();
+
+        for (String remoteBranch : this.branchAllResult.getRemoteBranches()) {
+            final String remoteName = remoteBranch.split("/")[0];
+            boolean contained = false;
+
+            for (String remote : remotes) {
+                if (remote.equals(remoteName)) {
+                    contained = true;
+                    break;
+                }
+            }
+
+            if (!contained)
+                remotes.add(remoteName);
+        }
+
+        return remotes;
     }
 }

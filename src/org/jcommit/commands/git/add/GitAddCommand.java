@@ -5,6 +5,7 @@ import org.jcommit.commands.CommandResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class GitAddCommand {
@@ -18,13 +19,12 @@ public final class GitAddCommand {
     }
 
     public CommandResult execute() throws IOException, InterruptedException {
-        final String[] arguments = new String[gitFilePaths.size() + 2];
-        int index = 0;
-        arguments[index++] = "git";
-        arguments[index++] = "add";
+        final List<String> arguments = new ArrayList<>();
+        arguments.add("git");
+        arguments.add("add");
 
         for (String gitFilePath : this.gitFilePaths)
-            arguments[index++] = gitFilePath;
+            arguments.add(gitFilePath);
 
         final Command command = new Command(this.executionPath, arguments);
         return command.execute();
