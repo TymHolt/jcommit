@@ -3,6 +3,8 @@ package org.jcommit.core;
 import org.jcommit.commands.CommandResult;
 import org.jcommit.commands.git.add.GitAddCommand;
 import org.jcommit.commands.git.commit.GitCommitCommand;
+import org.jcommit.commands.git.fetch.GitFetchCommand;
+import org.jcommit.commands.git.pull.GitPullCommand;
 import org.jcommit.commands.git.push.GitPushUCommand;
 import org.jcommit.commands.git.restore.GitRestoreCommand;
 import org.jcommit.commands.git.status.GitStatusResult;
@@ -142,6 +144,44 @@ public final class Context {
 
         try {
             final CommandResult result = gitPushUCommand.execute();
+
+            if (result.getExitCode() != 0)
+                throw new RuntimeException("Git exited with error code");
+        } catch (Exception exception) {
+            GuiUtil.popupError(exception.getMessage());
+        }
+
+        fetchStatus();
+    }
+
+    public void pull() {
+        if (currentProject == null)
+            return;
+
+        final File projectFile = this.currentProject.getFile();
+        final GitPullCommand gitPullCommand = new GitPullCommand(projectFile);
+
+        try {
+            final CommandResult result = gitPullCommand.execute();
+
+            if (result.getExitCode() != 0)
+                throw new RuntimeException("Git exited with error code");
+        } catch (Exception exception) {
+            GuiUtil.popupError(exception.getMessage());
+        }
+
+        fetchStatus();
+    }
+
+    public void fetch() {
+        if (currentProject == null)
+            return;
+
+        final File projectFile = this.currentProject.getFile();
+        final GitFetchCommand gitFetchCommand = new GitFetchCommand(projectFile);
+
+        try {
+            final CommandResult result = gitFetchCommand.execute();
 
             if (result.getExitCode() != 0)
                 throw new RuntimeException("Git exited with error code");

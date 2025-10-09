@@ -15,6 +15,12 @@ final class ControlPanel extends JPanel {
         super();
         setLayout(new FlowLayout(FlowLayout.LEFT));
 
+        final JButton fetchButton = new JButton("Fetch");
+        fetchButton.addActionListener(actionEvent -> {
+            mainViewCenterPanel.getMainView().getContext().fetch();
+        });
+        add(fetchButton);
+
         final JButton statusButton = new JButton("Status");
         statusButton.addActionListener(actionEvent -> {
             mainViewCenterPanel.getMainView().getContext().fetchStatus();
@@ -56,5 +62,11 @@ final class ControlPanel extends JPanel {
             context.push(remote, localBranch);
         });
         add(pushButton);
+
+        final JButton pullButton = new JButton("Pull");
+        pullButton.addActionListener(actionEvent -> {
+            mainViewCenterPanel.getMainView().getContext().pull();
+        });
+        add(pullButton);
     }
 }
