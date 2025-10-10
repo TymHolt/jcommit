@@ -23,9 +23,9 @@ public final class Context {
 
     public Context() {
         this.openedProjects = new ArrayList<>();
-        this.mainView = new MainView(this);
-        this.mainView.init();
         this.currentProject = null;
+        this.mainView = new MainView(this);
+        this.mainView.initGui();
     }
 
     public void openProject(Project project) {
@@ -48,6 +48,9 @@ public final class Context {
 
         this.openedProjects.remove(project);
         this.mainView.notifyCloseProject(project);
+
+        if (this.currentProject == project)
+            makeProjectCurrent(null);
     }
 
     public void makeProjectCurrent(Project project) {
@@ -66,7 +69,7 @@ public final class Context {
 
         this.currentProject.fetchStatus();
         fetchBranches();
-        this.mainView.notifyFetchStatus(currentProject);
+        this.mainView.updateGui();
     }
 
     public void fetchBranches() {

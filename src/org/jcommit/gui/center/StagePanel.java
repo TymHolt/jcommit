@@ -7,6 +7,8 @@ import java.util.List;
 
 final class StagePanel extends JPanel {
 
+    private final JButton selectionButton;
+    private final JButton allButton;
     private JList<String> currentListComponent;
     private List<String> elements;
 
@@ -14,6 +16,8 @@ final class StagePanel extends JPanel {
         super();
         setLayout(new BorderLayout());
         this.currentListComponent = null;
+        this.selectionButton = selectionButton;
+        this.allButton = allButton;
 
         final JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.LINE_AXIS));
@@ -24,6 +28,11 @@ final class StagePanel extends JPanel {
 
         add(titlePanel, BorderLayout.PAGE_START);
         setElements(new ArrayList<>());
+    }
+
+    void enableControls(boolean enabled) {
+        this.selectionButton.setEnabled(enabled);
+        this.allButton.setEnabled(enabled);
     }
 
     void setElements(List<String> elements) {

@@ -37,29 +37,28 @@ public final class MainView extends JFrame {
 
     public void notifyOpenProject(Project project) {
         this.sidePanel.notifyOpenProject(project);
+        updateGui();
     }
 
     public void notifyCloseProject(Project project) {
         this.sidePanel.notifyCloseProject(project);
+        updateGui();
     }
 
     public void notifyMakeProjectCurrent(Project project) {
         this.sidePanel.notifyMakeProjectCurrent(project);
-    }
-
-    public void notifyFetchStatus(Project project) {
-        this.centerPanel.notifyFetchStatus(project);
+        updateGui();
     }
 
     public Context getContext() {
         return this.context;
     }
 
-    public void init() {
-        this.centerPanel.init();
+    public void updateGui() {
+        this.centerPanel.updateGui();
     }
 
-    public GitStatusResult getLastStatusResult() {
-        return this.lastStatusResult;
+    public void initGui() {
+        this.centerPanel.initGui();
     }
 }

@@ -11,23 +11,31 @@ import java.util.List;
 
 final class ControlPanel extends JPanel {
 
+    private final Context context;
+    private final JButton fetchButton;
+    private final JButton statusButton;
+    private final JButton commitButton;
+    private final JButton pushButton;
+    private final JButton pullButton;
+
     ControlPanel(MainViewCenterPanel mainViewCenterPanel) {
         super();
         setLayout(new FlowLayout(FlowLayout.LEFT));
+        this.context = mainViewCenterPanel.getMainView().getContext();
 
-        final JButton fetchButton = new JButton("Fetch");
+        fetchButton = new JButton("Fetch");
         fetchButton.addActionListener(actionEvent -> {
-            mainViewCenterPanel.getMainView().getContext().fetch();
+            this.context.fetch();
         });
         add(fetchButton);
 
-        final JButton statusButton = new JButton("Status");
+        statusButton = new JButton("Status");
         statusButton.addActionListener(actionEvent -> {
-            mainViewCenterPanel.getMainView().getContext().fetchStatus();
+            this.context.fetchStatus();
         });
         add(statusButton);
 
-        final JButton commitButton = new JButton("Commit");
+        commitButton = new JButton("Commit");
         commitButton.addActionListener(actionEvent -> {
             final String message = GuiUtil.popupInput("Commit message");
 
@@ -36,14 +44,13 @@ final class ControlPanel extends JPanel {
                 return;
             }
 
-            mainViewCenterPanel.getMainView().getContext().commit(message);
+            this.context.commit(message);
         });
         add(commitButton);
 
-        final JButton pushButton = new JButton("Push");
+        pushButton = new JButton("Push");
         pushButton.addActionListener(actionEvent -> {
-            final Context context  = mainViewCenterPanel.getMainView().getContext();
-            final Project currentProject = context.getCurrentProject();
+            final Project currentProject = this.context.getCurrentProject();
 
             if (currentProject == null)
                 return;
@@ -63,10 +70,19 @@ final class ControlPanel extends JPanel {
         });
         add(pushButton);
 
-        final JButton pullButton = new JButton("Pull");
+        pullButton = new JButton("Pull");
         pullButton.addActionListener(actionEvent -> {
-            mainViewCenterPanel.getMainView().getContext().pull();
+            this.context.pull();
         });
         add(pullButton);
+    }
+
+    void updateGui() {
+        final boolean showProject = this.context.getCurrentProject() != null;
+        fetchButton.setEnabled(showProject);
+        statusButton.setEnabled(showProject);
+        commitButton.setEnabled(showProject);
+        pushButton.setEnabled(showProject);
+        pullButton.setEnabled(showProject);
     }
 }
