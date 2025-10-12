@@ -7,8 +7,7 @@ import org.jcommit.commands.git.fetch.GitFetchCommand;
 import org.jcommit.commands.git.pull.GitPullCommand;
 import org.jcommit.commands.git.push.GitPushUCommand;
 import org.jcommit.commands.git.restore.GitRestoreCommand;
-import org.jcommit.commands.git.status.GitStatusResult;
-import org.jcommit.gui.GuiUtil;
+import org.jcommit.gui.util.GuiUtil;
 import org.jcommit.gui.MainView;
 
 import java.io.File;

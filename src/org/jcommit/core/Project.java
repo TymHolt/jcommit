@@ -4,7 +4,7 @@ import org.jcommit.commands.git.branch.GitBranchAllCommand;
 import org.jcommit.commands.git.branch.GitBranchAllResult;
 import org.jcommit.commands.git.status.GitStatusCommand;
 import org.jcommit.commands.git.status.GitStatusResult;
-import org.jcommit.gui.GuiUtil;
+import org.jcommit.gui.util.GuiUtil;
 
 import java.io.File;
 import java.util.ArrayList;

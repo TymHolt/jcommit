@@ -2,7 +2,7 @@ package org.jcommit.gui.center;
 
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
-import org.jcommit.gui.GuiUtil;
+import org.jcommit.gui.util.GuiUtil;
 import org.jcommit.gui.popup.PushPopup;
 
 import javax.swing.*;

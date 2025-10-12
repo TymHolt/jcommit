@@ -2,7 +2,9 @@ package org.jcommit.gui.side;
 
 import org.jcommit.Log;
 import org.jcommit.core.Project;
-import org.jcommit.gui.GuiUtil;
+import org.jcommit.gui.util.FileSelectionOption;
+import org.jcommit.gui.util.FileSelectionResult;
+import org.jcommit.gui.util.GuiUtil;
 import org.jcommit.gui.MainView;
 
 import javax.swing.*;
@@ -25,13 +27,13 @@ public final class MainViewSidePanel extends JPanel {
         final JButton addProjectButton = new JButton("Add project...");
         addProjectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         addProjectButton.addActionListener(actionEvent -> {
-            final JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            final int option = fileChooser.showDialog(this, "Add project");
-            if (option != JFileChooser.APPROVE_OPTION)
+            final FileSelectionResult fileSelectionResult = GuiUtil.popupSelectDirectory(
+                "Add project");
+
+            if (fileSelectionResult.getOption() != FileSelectionOption.APPROVE)
                 return;
 
-            final File projectFile = fileChooser.getSelectedFile();
+            final File projectFile = fileSelectionResult.getFile();
             if (!Project.canBeProject(projectFile)) {
                 GuiUtil.popupInfo("File can not be opened as project");
                 return;
