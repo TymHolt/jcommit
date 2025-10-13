@@ -1,7 +1,10 @@
 package org.jcommit.gui.side;
 
 import org.jcommit.Log;
+import org.jcommit.commands.CommandResult;
+import org.jcommit.commands.git.clone.GitCloneCommand;
 import org.jcommit.core.Project;
+import org.jcommit.gui.popup.ClonePopup;
 import org.jcommit.gui.util.FileSelectionOption;
 import org.jcommit.gui.util.FileSelectionResult;
 import org.jcommit.gui.util.GuiUtil;
@@ -21,14 +24,16 @@ public final class MainViewSidePanel extends JPanel {
         this.mainView = mainView;
         setLayout(new BorderLayout());
 
-        this.projectListPanel = new ProjectListPanel(this);
-        add(this.projectListPanel, BorderLayout.CENTER);
+        //  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-        final JButton addProjectButton = new JButton("Add project...");
+        final JPanel buttonContainer = new JPanel();
+        buttonContainer.setLayout(new BorderLayout());
+
+        final JButton addProjectButton = new JButton("Open project");
         addProjectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         addProjectButton.addActionListener(actionEvent -> {
             final FileSelectionResult fileSelectionResult = GuiUtil.popupSelectDirectory(
-                "Add project");
+                "Open project");
 
             if (fileSelectionResult.getOption() != FileSelectionOption.APPROVE)
                 return;
@@ -41,15 +46,79 @@ public final class MainViewSidePanel extends JPanel {
 
             final Project project = new Project(projectFile);
             this.mainView.getContext().openProject(project);
-            Log.info("Project " + projectFile.getAbsolutePath() + " added");
         });
-        add(addProjectButton, BorderLayout.PAGE_START);
+        buttonContainer.add(addProjectButton, BorderLayout.PAGE_START);
+
+        final JButton cloneProjectButton = new JButton("Clone project");
+        cloneProjectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cloneProjectButton.addActionListener(actionEvent -> {
+            final ClonePopup clonePopup = new ClonePopup(mainView, "Clone project");
+            if (clonePopup.wasCanceled())
+                return;
+
+            final File parentDirectory = clonePopup.getParentDirectory();
+            if (parentDirectory == null || !parentDirectory.isDirectory() ||
+                !parentDirectory.exists()) {
+                GuiUtil.popupError("No directory selected");
+                return;
+            }
+
+            Log.info("Cloning...");
+
+            final String url = clonePopup.getUrl();
+            final GitCloneCommand cloneCommand = new GitCloneCommand(parentDirectory, url);
+
+            try {
+                final CommandResult result = cloneCommand.execute();
+
+                if (result.getExitCode() != 0)
+                    throw new RuntimeException("Git exited with error code");
+            } catch (Exception exception) {
+                GuiUtil.popupError(exception.getMessage());
+            }
+
+            final String projectName = getProjectNameFromUrl(url);
+            final String projectPath = parentDirectory.getAbsolutePath() + "/" + projectName;
+            final File projectFile = new File(projectPath);
+
+            if (!Project.canBeProject(projectFile)) {
+                GuiUtil.popupInfo("File could not be opened as project");
+                return;
+            }
+
+            final Project project = new Project(projectFile);
+            this.mainView.getContext().openProject(project);
+        });
+        buttonContainer.add(cloneProjectButton, BorderLayout.PAGE_END);
+
+        add(buttonContainer, BorderLayout.PAGE_START);
+
+        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        //  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+        this.projectListPanel = new ProjectListPanel(this);
+        add(this.projectListPanel, BorderLayout.CENTER);
+
+        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        //  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
         final JButton settingsButton = new JButton("Settings");
         settingsButton.addActionListener(actionEvent -> {
             GuiUtil.popupInfo("Settings not implemented yet");
         });
         add(settingsButton, BorderLayout.PAGE_END);
+
+        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    }
+
+    private static String getProjectNameFromUrl(String url) {
+        final String[] elements = url.split("/");
+        String projectName = elements[elements.length - 1];
+
+        if (projectName.endsWith(".git"))
+            projectName = projectName.substring(0, projectName.length() - ".git".length());
+
+        return projectName;
     }
 
     public void notifyOpenProject(Project project) {

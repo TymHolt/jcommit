@@ -1,5 +1,6 @@
 package org.jcommit.core;
 
+import org.jcommit.Log;
 import org.jcommit.commands.CommandResult;
 import org.jcommit.commands.git.add.GitAddCommand;
 import org.jcommit.commands.git.commit.GitCommitCommand;
@@ -39,6 +40,7 @@ public final class Context {
         this.openedProjects.add(project);
         this.mainView.notifyOpenProject(project);
         makeProjectCurrent(project);
+        Log.info("Project " + project.getFile().getAbsolutePath() + " opened");
     }
 
     public void closeProject(Project project) {
@@ -66,6 +68,7 @@ public final class Context {
         if (this.currentProject == null)
             return;
 
+        Log.info("Fetching status...");
         this.currentProject.fetchStatus();
         fetchBranches();
         this.mainView.updateGui();
@@ -140,6 +143,8 @@ public final class Context {
         if (currentProject == null)
             return;
 
+        Log.info("Pushing...");
+
         final File projectFile = this.currentProject.getFile();
         final GitPushUCommand gitPushUCommand = new GitPushUCommand(projectFile, remote,
             localBranch);
@@ -159,6 +164,8 @@ public final class Context {
     public void pull() {
         if (currentProject == null)
             return;
+
+        Log.info("Pulling...");
 
         final File projectFile = this.currentProject.getFile();
         final GitPullCommand gitPullCommand = new GitPullCommand(projectFile);

@@ -61,7 +61,7 @@ final class ControlPanel extends JPanel {
             final PushPopup pushPopup = new PushPopup(mainViewCenterPanel.getMainView(), "Push",
                 localBranches, remotes);
 
-            if (pushPopup.canceled())
+            if (pushPopup.wasCanceled())
                 return;
 
             final String remote = pushPopup.getSelectedRemote();

@@ -1,5 +1,6 @@
 package org.jcommit.gui.popup;
 
+import org.jcommit.gui.components.ApproveCancelButtonRow;
 import org.jcommit.util.ListUtil;
 
 import javax.swing.*;
@@ -12,13 +13,14 @@ public final class PushPopup extends JDialog {
 
     private final JComboBox<String> localBranchesComboBox;
     private final JComboBox<String> remotesComboBox;
-    private boolean cancel = true;
+    private boolean cancel;
 
     public PushPopup(JFrame parent, String title, List<String> localBranches,
         List<String> remotes) {
         super(parent, title, true);
         setLayout(new BorderLayout());
         setLocationRelativeTo(parent);
+        this.cancel = true;
 
         final int preferredWidth = Math.max((parent.getHeight() / 3), 200);
         final JPanel container = new JPanel();
@@ -41,26 +43,17 @@ public final class PushPopup extends JDialog {
         container.add(Box.createVerticalStrut(30));
         add(container, BorderLayout.CENTER);
 
-        final JPanel buttonRow = new JPanel();
-        buttonRow.setLayout(new BoxLayout(buttonRow, BoxLayout.LINE_AXIS));
-
-        final JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(actionEvent -> {
+        final ApproveCancelButtonRow buttonRow = new ApproveCancelButtonRow();
+        buttonRow.setCancelOption("Cancel", actionEvent -> {
             this.cancel = true;
             this.dispose();
         });
-        buttonRow.add(cancelButton);
-
-        buttonRow.add(Box.createHorizontalGlue());
-
-        final JButton pushButton = new JButton("Push");
-        pushButton.addActionListener(actionEvent -> {
+        buttonRow.setApproveOption("Push", actionEvent -> {
             this.cancel = false;
             this.dispose();
         });
-        buttonRow.add(pushButton);
-
         add(buttonRow, BorderLayout.PAGE_END);
+
         pack();
         setVisible(true);
     }
@@ -80,7 +73,7 @@ public final class PushPopup extends JDialog {
         return (String) this.remotesComboBox.getSelectedItem();
     }
 
-    public boolean canceled() {
+    public boolean wasCanceled() {
         return this.cancel;
     }
 }
