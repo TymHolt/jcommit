@@ -13,7 +13,6 @@ public final class ClonePopup extends JDialog {
 
     private final JTextField urlField;
     private final JTextField parentDirectoryPathField;
-    private final JButton parentDirectorySelectionButton;
     private boolean cancel;
 
     public ClonePopup(JFrame parent, String title) {
@@ -22,10 +21,10 @@ public final class ClonePopup extends JDialog {
         setLocationRelativeTo(parent);
         this.cancel = true;
 
-        //  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
         final JPanel container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
+
+        //  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
         container.add(new JLabel("URL"));
         this.urlField = new JTextField();
@@ -47,13 +46,13 @@ public final class ClonePopup extends JDialog {
         this.parentDirectoryPathField = new JTextField();
         directorySelectionContainer.add(this.parentDirectoryPathField, BorderLayout.CENTER);
 
-        this.parentDirectorySelectionButton = new JButton("...");
-        this.parentDirectorySelectionButton.addActionListener(actionEvent -> {
+        final JButton parentDirectorySelectionButton = new JButton("...");
+        parentDirectorySelectionButton.addActionListener(actionEvent -> {
             final FileSelectionResult result = GuiUtil.popupSelectDirectory("Select");
             if (result.getOption() == FileSelectionOption.APPROVE)
                 this.parentDirectoryPathField.setText(result.getFile().getAbsolutePath());
         });
-        directorySelectionContainer.add(this.parentDirectorySelectionButton, BorderLayout.LINE_END);
+        directorySelectionContainer.add(parentDirectorySelectionButton, BorderLayout.LINE_END);
 
         container.add(directorySelectionContainer);
 

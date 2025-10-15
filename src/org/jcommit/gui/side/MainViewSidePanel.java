@@ -3,8 +3,10 @@ package org.jcommit.gui.side;
 import org.jcommit.Log;
 import org.jcommit.commands.CommandResult;
 import org.jcommit.commands.git.clone.GitCloneCommand;
+import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.popup.ClonePopup;
+import org.jcommit.gui.popup.SettingsPopup;
 import org.jcommit.gui.util.FileSelectionOption;
 import org.jcommit.gui.util.FileSelectionResult;
 import org.jcommit.gui.util.GuiUtil;
@@ -104,7 +106,9 @@ public final class MainViewSidePanel extends JPanel {
 
         final JButton settingsButton = new JButton("Settings");
         settingsButton.addActionListener(actionEvent -> {
-            GuiUtil.popupInfo("Settings not implemented yet");
+            final Context context = mainView.getContext();
+            new SettingsPopup(mainView, context.getSettings());
+            context.applySettings();
         });
         add(settingsButton, BorderLayout.PAGE_END);
 

@@ -13,7 +13,7 @@ public final class Main {
     }
 
     public static void main(String[] args) {
-        Log.info(SOFTWARE_NAME + " " + getVersionName() + " started...");
         new Context();
+        Log.info(SOFTWARE_NAME + " " + getVersionName() + " started");
     }
 }

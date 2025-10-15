@@ -19,9 +19,14 @@ public final class Context {
 
     private final MainView mainView;
     private final List<Project> openedProjects;
+    private final Settings settings;
     private Project currentProject;
 
     public Context() {
+        this.settings = new Settings();
+        this.settings.load();
+        applySettings();
+
         this.openedProjects = new ArrayList<>();
         this.currentProject = null;
         this.mainView = new MainView(this);
@@ -199,6 +204,17 @@ public final class Context {
         }
 
         fetchStatus();
+    }
+
+    public void applySettings() {
+        Log.setPrintDebug(this.settings.getPrintDebug());
+        Log.setPrintToFile(this.settings.getPrintToFile());
+        Log.setPrintTimeStamp(this.settings.getPrintTimeStamp());
+        this.settings.save();
+    }
+
+    public Settings getSettings() {
+        return this.settings;
     }
 
     public MainView getMainView() {
