@@ -1,5 +1,8 @@
 package org.jcommit;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Calendar;
 
 public final class Log {
@@ -7,6 +10,7 @@ public final class Log {
     private static boolean printDebug = false;
     private static boolean printToFile = false;
     private static boolean printTimeStamp = false;
+    private static String logFilePath = "log.txt";
 
     public static void setPrintDebug(boolean flag) {
         printDebug = flag;
@@ -18,6 +22,10 @@ public final class Log {
 
     public static void setPrintTimeStamp(boolean flag) {
         printTimeStamp = flag;
+    }
+
+    public static void setLogFilePath(String path) {
+        logFilePath = path;
     }
 
     public static void info(String message) {
@@ -47,7 +55,32 @@ public final class Log {
         if (!printToFile)
             return;
 
-        // TODO Print to file
+        final File logFile = new File(logFilePath);
+        if (!logFile.exists()) {
+            try {
+                logFile.createNewFile();
+
+                if (!logFile.isFile())
+                    throw new IOException("Not a file");
+            } catch (IOException exception) {
+                // Print directly to System.err, log would be recursive call
+                System.err.println("LOG FILE COULD NOT BE CREATED");
+                exception.printStackTrace(System.err);
+                return;
+            }
+        }
+
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(logFile, true);
+            fileWriter.write(line);
+            fileWriter.write('\n');
+            fileWriter.close();
+        } catch (IOException exception) {
+            // Print directly to System.err, log would be recursive call
+            System.err.println("LOG FILE COULD NOT BE WRITTEN");
+            exception.printStackTrace(System.err);
+        }
     }
 
     private static String getTimeStamp() {

@@ -1,5 +1,7 @@
 package org.jcommit.commands;
 
+import org.jcommit.Log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +40,23 @@ public class Command {
         }
 
         final int exitCode = process.waitFor();
-        return new CommandResult(outputBuilder.toString(), exitCode);
+        final String output = outputBuilder.toString();
+
+        final StringBuilder logBuilder = new StringBuilder();
+
+        logBuilder.append("----------");
+        logBuilder.append('\n');
+        logBuilder.append("Running command: ");
+        for (String argument : this.command) {
+            logBuilder.append(argument);
+            logBuilder.append(' ');
+        }
+        logBuilder.append('\n');
+        logBuilder.append(output);
+        logBuilder.append("----------");
+
+        Log.debug(logBuilder.toString());
+
+        return new CommandResult(output, exitCode);
     }
 }

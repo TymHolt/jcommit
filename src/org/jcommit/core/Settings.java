@@ -120,4 +120,18 @@ public final class Settings {
         this.properties.setProperty(PRINT_TIME_STAMP_KEY, Boolean.toString(value));
         return value;
     }
+
+    private static final String LOG_FILE_PATH_KEY = "log_file_path";
+    private static final String LOG_FILE_PATH_DEFAULT = "log.txt";
+
+    public void setLogFilePath(String path) {
+        this.properties.setProperty(LOG_FILE_PATH_KEY, path);
+    }
+
+    public String getLogFilePath() {
+        final String value = this.properties.getProperty(LOG_FILE_PATH_KEY, LOG_FILE_PATH_DEFAULT);
+        // Save this value again to make sure it exists and has right format
+        this.properties.setProperty(LOG_FILE_PATH_KEY, value);
+        return value;
+    }
 }

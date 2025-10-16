@@ -11,6 +11,7 @@ public final class SettingsPopup extends JDialog {
     private final JCheckBox printDebugToggle;
     private final JCheckBox printToFileToggle;
     private final JCheckBox printTimeStampToggle;
+    private final JTextField logFilePathField;
 
     public SettingsPopup(JFrame parent, Settings settings) {
         super(parent, "Settings", true);
@@ -32,6 +33,11 @@ public final class SettingsPopup extends JDialog {
         this.printTimeStampToggle.setSelected(settings.getPrintTimeStamp());
         container.add(printTimeStampToggle);
 
+        container.add(new JLabel("Log file path"));
+        this.logFilePathField = new JTextField();
+        this.logFilePathField.setText(settings.getLogFilePath());
+        container.add(this.logFilePathField);
+
         //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         container.add(Box.createVerticalStrut(30));
@@ -47,6 +53,7 @@ public final class SettingsPopup extends JDialog {
             settings.setPrintDebug(this.printDebugToggle.isSelected());
             settings.setPrintToFile(this.printToFileToggle.isSelected());
             settings.setPrintTimeStamp(this.printTimeStampToggle.isSelected());
+            settings.setLogFilePath(this.logFilePathField.getText());
             this.dispose();
         });
         add(buttonRow, BorderLayout.PAGE_END);

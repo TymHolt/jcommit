@@ -39,6 +39,9 @@ final class ControlPanel extends JPanel {
         commitButton.addActionListener(actionEvent -> {
             final String message = GuiUtil.popupInput("Commit message");
 
+            if (message == null)
+                return;
+
             if (message.isBlank()) {
                 GuiUtil.popupInfo("Commit message may not be blank");
                 return;

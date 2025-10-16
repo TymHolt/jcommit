@@ -210,6 +210,7 @@ public final class Context {
         Log.setPrintDebug(this.settings.getPrintDebug());
         Log.setPrintToFile(this.settings.getPrintToFile());
         Log.setPrintTimeStamp(this.settings.getPrintTimeStamp());
+        Log.setLogFilePath(this.settings.getLogFilePath());
         this.settings.save();
     }
 
