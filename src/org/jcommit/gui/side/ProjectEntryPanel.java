@@ -1,26 +1,28 @@
 package org.jcommit.gui.side;
 
 import org.jcommit.core.Project;
+import org.jcommit.gui.theme.Theme;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 final class ProjectEntryPanel extends JPanel {
 
+    private final Theme theme;
+    private final JLabel nameLabel;
     private final Project project;
     private final ProjectListPanel listPanel;
 
     ProjectEntryPanel(Project project, ProjectListPanel listPanel) {
         super();
+        this.theme = listPanel.getSidePanel().getMainView().getContext().getTheme();
         this.project = project;
         this.listPanel = listPanel;
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setCursor(new Cursor(Cursor.HAND_CURSOR));
-        setHighlighted(false);
 
-        add(new JLabel(project.getFile().getName()));
+        this.nameLabel = new JLabel(project.getFile().getName());
+        add(this.nameLabel);
         add(Box.createHorizontalGlue());
 
         final JButton projectMenuButton = new JButton("...");
@@ -42,10 +44,17 @@ final class ProjectEntryPanel extends JPanel {
         add(projectMenuButton);
 
         setMaximumSize(new Dimension(getMaximumSize().width, getPreferredSize().height));
+        setHighlighted(false);
     }
 
     void setHighlighted(boolean highlighted) {
-        setBackground(highlighted ? Color.GRAY : Color.LIGHT_GRAY);
+        if (highlighted) {
+            setBackground(this.theme.getAccent());
+            this.nameLabel.setForeground(this.theme.getTextPrimary());
+        } else {
+            setBackground(this.theme.getBackgroundPanel());
+            this.nameLabel.setForeground(this.theme.getTextSecondary());
+        }
     }
 
     Project getProject() {

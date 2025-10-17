@@ -134,4 +134,27 @@ public final class Settings {
         this.properties.setProperty(LOG_FILE_PATH_KEY, value);
         return value;
     }
+
+    private static final String USE_DARK_THEME_KEY = "use_dark_theme";
+    private static final boolean USE_DARK_THEME_DEFAULT = false;
+
+    public void setUseDarkTheme(boolean flag) {
+        this.properties.setProperty(USE_DARK_THEME_KEY, Boolean.toString(flag));
+    }
+
+    public boolean getUseDarkTheme() {
+        final String stringValue = this.properties.getProperty(USE_DARK_THEME_KEY,
+                Boolean.toString(USE_DARK_THEME_DEFAULT));
+        boolean value = USE_DARK_THEME_DEFAULT;
+
+        try {
+            value = Boolean.parseBoolean(stringValue);
+        } catch (Exception exception) {
+            // Do nothing, just prevent exception if parsing fails
+        }
+
+        // Save this value again to make sure it exists and has right format
+        this.properties.setProperty(USE_DARK_THEME_KEY, Boolean.toString(value));
+        return value;
+    }
 }

@@ -78,6 +78,8 @@ final class ControlPanel extends JPanel {
             this.context.pull();
         });
         add(pullButton);
+
+        setBackground(this.context.getTheme().getBackgroundMain());
     }
 
     void updateGui() {

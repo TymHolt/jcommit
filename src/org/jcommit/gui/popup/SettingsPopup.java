@@ -2,6 +2,7 @@ package org.jcommit.gui.popup;
 
 import org.jcommit.core.Settings;
 import org.jcommit.gui.components.ApproveCancelButtonRow;
+import org.jcommit.gui.util.GuiUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +13,7 @@ public final class SettingsPopup extends JDialog {
     private final JCheckBox printToFileToggle;
     private final JCheckBox printTimeStampToggle;
     private final JTextField logFilePathField;
+    private final JComboBox<String> themeSelection;
 
     public SettingsPopup(JFrame parent, Settings settings) {
         super(parent, "Settings", true);
@@ -38,6 +40,11 @@ public final class SettingsPopup extends JDialog {
         this.logFilePathField.setText(settings.getLogFilePath());
         container.add(this.logFilePathField);
 
+        container.add(new JLabel("Theme"));
+        this.themeSelection = new JComboBox<>(new String[] {"Light", "Dark"});
+        this.themeSelection.setSelectedIndex(settings.getUseDarkTheme() ? 1 : 0);
+        container.add(this.themeSelection);
+
         //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         container.add(Box.createVerticalStrut(30));
@@ -50,6 +57,11 @@ public final class SettingsPopup extends JDialog {
             this.dispose();
         });
         buttonRow.setApproveOption("Apply", actionEvent -> {
+            final boolean newUseDarkTheme = this.themeSelection.getSelectedIndex() == 1;
+            if (newUseDarkTheme != settings.getUseDarkTheme())
+                GuiUtil.popupInfo("Theme changes will take effect after application restart");
+            
+            settings.setUseDarkTheme(newUseDarkTheme);
             settings.setPrintDebug(this.printDebugToggle.isSelected());
             settings.setPrintToFile(this.printToFileToggle.isSelected());
             settings.setPrintTimeStamp(this.printTimeStampToggle.isSelected());

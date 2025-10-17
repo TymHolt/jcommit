@@ -8,6 +8,9 @@ import org.jcommit.commands.git.fetch.GitFetchCommand;
 import org.jcommit.commands.git.pull.GitPullCommand;
 import org.jcommit.commands.git.push.GitPushUCommand;
 import org.jcommit.commands.git.restore.GitRestoreCommand;
+import org.jcommit.gui.theme.DarkTheme;
+import org.jcommit.gui.theme.LightTheme;
+import org.jcommit.gui.theme.Theme;
 import org.jcommit.gui.util.GuiUtil;
 import org.jcommit.gui.MainView;
 
@@ -18,6 +21,7 @@ import java.util.List;
 public final class Context {
 
     private final MainView mainView;
+    private final Theme theme;
     private final List<Project> openedProjects;
     private final Settings settings;
     private Project currentProject;
@@ -26,6 +30,9 @@ public final class Context {
         this.settings = new Settings();
         this.settings.load();
         applySettings();
+
+        // Determine theme at startup, so changes only take effect after restart
+        this.theme = this.settings.getUseDarkTheme() ? new DarkTheme() : new LightTheme();
 
         this.openedProjects = new ArrayList<>();
         this.currentProject = null;
@@ -218,8 +225,8 @@ public final class Context {
         return this.settings;
     }
 
-    public MainView getMainView() {
-        return this.mainView;
+    public Theme getTheme() {
+        return this.theme;
     }
 
     public List<Project> getOpenedProjects() {

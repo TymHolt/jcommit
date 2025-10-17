@@ -1,6 +1,7 @@
 package org.jcommit.gui.side;
 
 import org.jcommit.core.Project;
+import org.jcommit.gui.theme.Theme;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -36,6 +37,7 @@ final class ProjectListPanel extends JPanel {
         this.sidePanel = sidePanel;
         this.projectEntryPanels = new HashMap<>();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        setBackground(sidePanel.getMainView().getContext().getTheme().getBackgroundMain());
     }
 
     public void notifyOpenProject(Project project) {

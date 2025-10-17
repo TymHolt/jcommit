@@ -4,6 +4,7 @@ import org.jcommit.commands.git.status.GitStatusFileInfo;
 import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
+import org.jcommit.gui.theme.Theme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,8 +28,9 @@ final class StageControlPanel extends JPanel {
         final JButton unstageButton = new JButton("Unstage");
         final JButton unstageAllButton = new JButton("Unstage all");
 
-        this.unstagedPanel = new StagePanel("Unstaged", stageButton, stageAllButton);
-        this.stagedPanel = new StagePanel("Staged", unstageButton, unstageAllButton);
+        final Theme theme = this.context.getTheme();
+        this.unstagedPanel = new StagePanel(theme, "Unstaged", stageButton, stageAllButton);
+        this.stagedPanel = new StagePanel(theme, "Staged", unstageButton, unstageAllButton);
 
         stageButton.addActionListener(actionEvent -> {
             final List<String> paths = this.unstagedPanel.getSelectedPaths();
