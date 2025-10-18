@@ -13,8 +13,10 @@ import org.jcommit.gui.theme.LightTheme;
 import org.jcommit.gui.theme.Theme;
 import org.jcommit.gui.util.GuiUtil;
 import org.jcommit.gui.MainView;
+import org.jcommit.util.FileLoader;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,20 +29,71 @@ public final class Context {
     private Project currentProject;
 
     public Context() {
+        this.openedProjects = new ArrayList<>();
+        this.currentProject = null;
         this.settings = new Settings();
         this.settings.load();
         applySettings();
 
         // Determine theme at startup, so changes only take effect after restart
         this.theme = this.settings.getUseDarkTheme() ? new DarkTheme() : new LightTheme();
-
-        this.openedProjects = new ArrayList<>();
-        this.currentProject = null;
         this.mainView = new MainView(this);
         this.mainView.initGui();
+
+        loadOpenedProjects();
+    }
+
+    private final String OPENED_PROJECT_FILE = "projects.txt";
+
+    private void loadOpenedProjects() {
+        final File file = new File(OPENED_PROJECT_FILE);
+        if (!file.exists() || !file.isFile()) {
+            Log.info("Opened projects could not be loaded");
+            return;
+        }
+
+        try {
+            final List<String> projectPaths = FileLoader.loadFileLines(file);
+
+            for (String projectPath : projectPaths) {
+                final File projectFile = new File(projectPath);
+                if (!Project.canBeProject(projectFile)) {
+                    Log.error("Failed to load project " + projectPath);
+                    continue;
+                }
+
+                openProject(new Project(projectFile), false);
+            }
+        } catch (IOException exception) {
+            Log.error("Error while loading opened projects: " + exception.getMessage());
+        }
+    }
+
+    private void saveOpenedProjects() {
+        try {
+            final File file = new File(OPENED_PROJECT_FILE);
+            file.createNewFile();
+
+            if (!file.isFile()) {
+                Log.info("Opened projects could not be saved");
+                return;
+            }
+
+            final List<String> projectPaths = new ArrayList<>();
+            for (Project project : this.openedProjects)
+                projectPaths.add(project.getFile().getAbsolutePath());
+
+            FileLoader.writeFileLines(file, projectPaths);
+        } catch (IOException exception) {
+            Log.error("Error while saving opened projects: " + exception.getMessage());
+        }
     }
 
     public void openProject(Project project) {
+        openProject(project, true);
+    }
+
+    public void openProject(Project project, boolean saveList) {
         for (Project openedProject : this.openedProjects) {
             if (openedProject.isSameProject(project)) {
                 // Project already opened
@@ -53,6 +106,9 @@ public final class Context {
         this.mainView.notifyOpenProject(project);
         makeProjectCurrent(project);
         Log.info("Project " + project.getFile().getAbsolutePath() + " opened");
+
+        if (saveList)
+            saveOpenedProjects();
     }
 
     public void closeProject(Project project) {
@@ -64,6 +120,8 @@ public final class Context {
 
         if (this.currentProject == project)
             makeProjectCurrent(null);
+
+        saveOpenedProjects();
     }
 
     public void makeProjectCurrent(Project project) {
@@ -227,10 +285,6 @@ public final class Context {
 
     public Theme getTheme() {
         return this.theme;
-    }
-
-    public List<Project> getOpenedProjects() {
-        return new ArrayList<>(this.openedProjects);
     }
 
     public Project getCurrentProject() {
