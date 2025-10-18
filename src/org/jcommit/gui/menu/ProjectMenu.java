@@ -1,39 +1,41 @@
-package org.jcommit.gui.side;
+package org.jcommit.gui.menu;
 
 import org.jcommit.Log;
 import org.jcommit.commands.CommandResult;
 import org.jcommit.commands.git.clone.GitCloneCommand;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
+import org.jcommit.gui.MainView;
+import org.jcommit.gui.components.ThemedMenu;
+import org.jcommit.gui.components.ThemedMenuItem;
 import org.jcommit.gui.popup.ClonePopup;
-import org.jcommit.gui.popup.SettingsPopup;
+import org.jcommit.gui.theme.Theme;
 import org.jcommit.gui.util.FileSelectionOption;
 import org.jcommit.gui.util.FileSelectionResult;
 import org.jcommit.gui.util.GuiUtil;
-import org.jcommit.gui.MainView;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 
-public final class MainViewSidePanel extends JPanel {
+public final class ProjectMenu extends ThemedMenu {
 
-    private final ProjectListPanel projectListPanel;
-    private final MainView mainView;
+    public ProjectMenu(MainView mainView) {
+        super("Project", mainView.getContext().getTheme());
+        final Context context = mainView.getContext();
+        final Theme theme = context.getTheme();
 
-    public MainViewSidePanel(MainView mainView) {
-        super();
-        this.mainView = mainView;
-        setLayout(new BorderLayout());
+        // ------------------------------------------------------------
 
-        //  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+        final JMenuItem newItem = new ThemedMenuItem("New...", theme);
+        newItem.addActionListener(actionEvent -> {
+            GuiUtil.popupInfo("New project not implemented yet");
+        });
+        add(newItem);
 
-        final JPanel buttonContainer = new JPanel();
-        buttonContainer.setLayout(new BorderLayout());
+        // ------------------------------------------------------------
 
-        final JButton addProjectButton = new JButton("Open project");
-        addProjectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        addProjectButton.addActionListener(actionEvent -> {
+        final JMenuItem openItem = new ThemedMenuItem("Open...", theme);
+        openItem.addActionListener(actionEvent -> {
             final FileSelectionResult fileSelectionResult = GuiUtil.popupSelectDirectory(
                 "Open project");
 
@@ -47,13 +49,14 @@ public final class MainViewSidePanel extends JPanel {
             }
 
             final Project project = new Project(projectFile);
-            this.mainView.getContext().openProject(project);
+            context.openProject(project);
         });
-        buttonContainer.add(addProjectButton, BorderLayout.PAGE_START);
+        add(openItem);
 
-        final JButton cloneProjectButton = new JButton("Clone project");
-        cloneProjectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cloneProjectButton.addActionListener(actionEvent -> {
+        // ------------------------------------------------------------
+
+        final JMenuItem cloneItem = new ThemedMenuItem("Clone...", theme);
+        cloneItem.addActionListener(actionEvent -> {
             final ClonePopup clonePopup = new ClonePopup(mainView, "Clone project");
             if (clonePopup.wasCanceled())
                 return;
@@ -89,30 +92,9 @@ public final class MainViewSidePanel extends JPanel {
             }
 
             final Project project = new Project(projectFile);
-            this.mainView.getContext().openProject(project);
+            context.openProject(project);
         });
-        buttonContainer.add(cloneProjectButton, BorderLayout.PAGE_END);
-
-        add(buttonContainer, BorderLayout.PAGE_START);
-
-        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
-        this.projectListPanel = new ProjectListPanel(this);
-        add(this.projectListPanel, BorderLayout.CENTER);
-
-        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
-        final JButton settingsButton = new JButton("Settings");
-        settingsButton.addActionListener(actionEvent -> {
-            final Context context = mainView.getContext();
-            new SettingsPopup(mainView, context.getSettings());
-            context.applySettings();
-        });
-        add(settingsButton, BorderLayout.PAGE_END);
-
-        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        add(cloneItem);
     }
 
     private static String getProjectNameFromUrl(String url) {
@@ -123,21 +105,5 @@ public final class MainViewSidePanel extends JPanel {
             projectName = projectName.substring(0, projectName.length() - ".git".length());
 
         return projectName;
-    }
-
-    public void notifyOpenProject(Project project) {
-        this.projectListPanel.notifyOpenProject(project);
-    }
-
-    public void notifyCloseProject(Project project) {
-        this.projectListPanel.notifyCloseProject(project);
-    }
-
-    public void notifyMakeProjectCurrent(Project project) {
-        this.projectListPanel.notifyMakeProjectCurrent(project);
-    }
-
-    public MainView getMainView() {
-        return mainView;
     }
 }

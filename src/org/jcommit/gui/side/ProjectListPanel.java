@@ -1,7 +1,7 @@
 package org.jcommit.gui.side;
 
+import org.jcommit.core.Context;
 import org.jcommit.core.Project;
-import org.jcommit.gui.theme.Theme;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
 
-final class ProjectListPanel extends JPanel {
+public final class ProjectListPanel extends JPanel {
 
     private final MouseListener projectClickListener = new MouseAdapter() {
 
@@ -24,24 +24,24 @@ final class ProjectListPanel extends JPanel {
             if (event.getButton() == MouseEvent.BUTTON1) {
                 final Project project = getProjectByComponent((JComponent) sourceObject);
                 if (project != null)
-                    sidePanel.getMainView().getContext().makeProjectCurrent(project);
+                    context.makeProjectCurrent(project);
             }
         }
     };
 
-    private final MainViewSidePanel sidePanel;
+    private final Context context;
     private final HashMap<Project, ProjectEntryPanel> projectEntryPanels;
 
-    ProjectListPanel(MainViewSidePanel sidePanel) {
+    public ProjectListPanel(Context context) {
         super();
-        this.sidePanel = sidePanel;
+        this.context = context;
         this.projectEntryPanels = new HashMap<>();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        setBackground(sidePanel.getMainView().getContext().getTheme().getBackgroundMain());
+        setBackground(context.getTheme().getBackgroundMain());
     }
 
     public void notifyOpenProject(Project project) {
-        final ProjectEntryPanel projectEntryPanel = new ProjectEntryPanel(project, this);
+        final ProjectEntryPanel projectEntryPanel = new ProjectEntryPanel(project, this.context);
         projectEntryPanel.addMouseListener(projectClickListener);
         this.projectEntryPanels.put(project, projectEntryPanel);
         add(projectEntryPanel);
@@ -73,9 +73,5 @@ final class ProjectListPanel extends JPanel {
         }
 
         return null;
-    }
-
-    MainViewSidePanel getSidePanel() {
-        return this.sidePanel;
     }
 }

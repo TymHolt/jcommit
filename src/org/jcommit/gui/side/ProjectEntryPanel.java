@@ -1,5 +1,6 @@
 package org.jcommit.gui.side;
 
+import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.theme.Theme;
 
@@ -11,13 +12,11 @@ final class ProjectEntryPanel extends JPanel {
     private final Theme theme;
     private final JLabel nameLabel;
     private final Project project;
-    private final ProjectListPanel listPanel;
 
-    ProjectEntryPanel(Project project, ProjectListPanel listPanel) {
+    ProjectEntryPanel(Project project, Context context) {
         super();
-        this.theme = listPanel.getSidePanel().getMainView().getContext().getTheme();
+        this.theme = context.getTheme();
         this.project = project;
-        this.listPanel = listPanel;
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setCursor(new Cursor(Cursor.HAND_CURSOR));
 
@@ -35,8 +34,7 @@ final class ProjectEntryPanel extends JPanel {
             final JPopupMenu popupMenu = new JPopupMenu();
             final JMenuItem menuItem = new JMenuItem("Close");
             menuItem.addActionListener(menuActionEvent -> {
-                final MainViewSidePanel sidePanel = this.listPanel.getSidePanel();
-                sidePanel.getMainView().getContext().closeProject(project);
+                context.closeProject(project);
             });
             popupMenu.add(menuItem);
             popupMenu.show(sourceComponent, 0, 0);
