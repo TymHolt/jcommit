@@ -3,12 +3,14 @@ package org.jcommit.gui.menu;
 import org.jcommit.Log;
 import org.jcommit.commands.CommandResult;
 import org.jcommit.commands.git.clone.GitCloneCommand;
+import org.jcommit.commands.git.init.GitInitCommand;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.MainView;
 import org.jcommit.gui.components.ThemedMenu;
 import org.jcommit.gui.components.ThemedMenuItem;
 import org.jcommit.gui.popup.ClonePopup;
+import org.jcommit.gui.popup.NewPopup;
 import org.jcommit.gui.theme.Theme;
 import org.jcommit.gui.util.FileSelectionOption;
 import org.jcommit.gui.util.FileSelectionResult;
@@ -28,7 +30,37 @@ public final class ProjectMenu extends ThemedMenu {
 
         final JMenuItem newItem = new ThemedMenuItem("New...", theme);
         newItem.addActionListener(actionEvent -> {
-            GuiUtil.popupInfo("New project not implemented yet");
+            final NewPopup newPopup = new NewPopup(mainView, "New project");
+            if (newPopup.wasCanceled())
+                return;
+
+            final File projectFile = newPopup.getProjectDirectory();
+            if (projectFile == null || !projectFile.isDirectory() ||
+                !projectFile.exists()) {
+                GuiUtil.popupError("No directory selected");
+                return;
+            }
+
+            Log.info("Init...");
+
+            final GitInitCommand initCommand = new GitInitCommand(projectFile);
+
+            try {
+                final CommandResult result = initCommand.execute();
+
+                if (result.getExitCode() != 0)
+                    throw new RuntimeException("Git exited with error code");
+            } catch (Exception exception) {
+                GuiUtil.popupError(exception.getMessage());
+            }
+
+            if (!Project.canBeProject(projectFile)) {
+                GuiUtil.popupInfo("File could not be opened as project");
+                return;
+            }
+
+            final Project project = new Project(projectFile);
+            context.openProject(project);
         });
         add(newItem);
 
