@@ -5,6 +5,7 @@ import org.jcommit.commands.CommandResult;
 import org.jcommit.commands.git.add.GitAddCommand;
 import org.jcommit.commands.git.commit.GitCommitCommand;
 import org.jcommit.commands.git.fetch.GitFetchCommand;
+import org.jcommit.commands.git.help.GitHelpCommand;
 import org.jcommit.commands.git.pull.GitPullCommand;
 import org.jcommit.commands.git.push.GitPushUCommand;
 import org.jcommit.commands.git.restore.GitRestoreCommand;
@@ -39,6 +40,15 @@ public final class Context {
         this.theme = this.settings.getUseDarkTheme() ? new DarkTheme() : new LightTheme();
         this.mainView = new MainView(this);
         this.mainView.initGui();
+
+        // Try to detect working git installation by running git help
+        try {
+            final int exitCode = new GitHelpCommand(new File(".")).execute().getExitCode();
+            if (exitCode != 0)
+                throw new RuntimeException("Git could not be run");
+        } catch (Exception e) {
+            GuiUtil.popupError("Failed to find working git installation");
+        }
 
         loadOpenedProjects();
     }
