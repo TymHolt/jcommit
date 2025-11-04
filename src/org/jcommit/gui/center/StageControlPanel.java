@@ -1,19 +1,26 @@
 package org.jcommit.gui.center;
 
+import org.jcommit.commands.git.branch.GitBranchAllResult;
 import org.jcommit.commands.git.status.GitStatusFileInfo;
 import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.theme.Theme;
+import org.jcommit.gui.util.GuiUtil;
+import org.jcommit.util.ListUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 final class StageControlPanel extends JPanel {
 
     private final Context context;
+    private final JPanel actionPanel;
+    private JComboBox<String> branchSelection;
     private final StagePanel unstagedPanel;
     private final StagePanel stagedPanel;
     private final JSplitPane splitPane;
@@ -22,13 +29,27 @@ final class StageControlPanel extends JPanel {
         super();
         setLayout(new BorderLayout());
         this.context = mainViewCenterPanel.getMainView().getContext();
+        final Theme theme = this.context.getTheme();
+
+        // ------------------------------------------------------------
+
+        this.actionPanel = new JPanel();
+        this.actionPanel.setLayout(new BorderLayout());
+        this.actionPanel.setBackground(theme.getBackgroundMain());
+
+        this.branchSelection = new JComboBox<>(new String[] {"<No branch>"});
+        this.branchSelection.setEnabled(false); // No switching branches yet
+        this.actionPanel.add(this.branchSelection, BorderLayout.LINE_END);
+
+        add(this.actionPanel, BorderLayout.PAGE_START);
+
+        // ------------------------------------------------------------
 
         final JButton stageButton = new JButton("Stage");
         final JButton stageAllButton = new JButton("Stage all");
         final JButton unstageButton = new JButton("Unstage");
         final JButton unstageAllButton = new JButton("Unstage all");
 
-        final Theme theme = this.context.getTheme();
         this.unstagedPanel = new StagePanel(theme, "Unstaged", stageButton, stageAllButton);
         this.stagedPanel = new StagePanel(theme, "Staged", unstageButton, unstageAllButton);
 
@@ -68,7 +89,6 @@ final class StageControlPanel extends JPanel {
 
         if (showProject) {
             final GitStatusResult gitStatusResult = project.getStatusResult();
-
             for (GitStatusFileInfo fileInfo : gitStatusResult.getFileInfos()) {
                 if (fileInfo.isStaged())
                     stagedElements.add(fileInfo.getGitFilePath());
@@ -78,6 +98,8 @@ final class StageControlPanel extends JPanel {
 
             for (String gitFilePath : gitStatusResult.getUntrackedFiles())
                 unstagedElements.add(gitFilePath);
+
+            showSelectedBranch();
         }
 
         this.unstagedPanel.setElements(unstagedElements);
@@ -85,6 +107,19 @@ final class StageControlPanel extends JPanel {
 
         revalidate();
         repaint();
+    }
+
+    private void showSelectedBranch() {
+        final GitBranchAllResult branchResult =
+            this.context.getCurrentProject().getBranchAllResult();
+        final List<String> branchesList = branchResult.getLocalBranches();
+        final String[] branches = ListUtil.listToArray(branchesList);
+
+        this.actionPanel.remove(this.branchSelection);
+        this.branchSelection = new JComboBox<>(branches);
+        this.branchSelection.setEnabled(false); // No switching branches yet
+        this.branchSelection.setSelectedItem(branchResult.getCurrentBranch());
+        this.actionPanel.add(this.branchSelection, BorderLayout.LINE_END);
     }
 
     void initGui() {

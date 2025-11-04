@@ -8,12 +8,14 @@ public final class GitBranchAllResult {
     private final CommandResult commandResult;
     private final List<String> localBranches;
     private final List<String> remoteBranches;
+    private final String currentBranch;
 
     GitBranchAllResult(CommandResult commandResult, List<String> localBranches,
-        List<String> remoteBranches) {
+        List<String> remoteBranches, String currentBranch) {
         this.commandResult = commandResult;
         this.localBranches = localBranches;
         this.remoteBranches = remoteBranches;
+        this.currentBranch = currentBranch;
     }
 
     public CommandResult getCommandResult() {
@@ -26,5 +28,9 @@ public final class GitBranchAllResult {
 
     public List<String> getRemoteBranches() {
         return this.remoteBranches;
+    }
+
+    public String getCurrentBranch() {
+        return this.currentBranch;
     }
 }

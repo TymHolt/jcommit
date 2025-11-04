@@ -86,6 +86,10 @@ public final class StringParser {
         return stringBuilder.toString();
     }
 
+    public char getCurrentChar() {
+        return this.currentChar;
+    }
+
     public static boolean startsWithIgnoreWhitespace(String string, String start) {
         final StringParser stringParser = new StringParser(string);
         stringParser.skipWhitespace();
