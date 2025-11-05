@@ -3,6 +3,7 @@ package org.jcommit.core;
 import org.jcommit.Log;
 import org.jcommit.commands.CommandResult;
 import org.jcommit.commands.git.add.GitAddCommand;
+import org.jcommit.commands.git.checkout.GitCheckoutCommand;
 import org.jcommit.commands.git.commit.GitCommitCommand;
 import org.jcommit.commands.git.fetch.GitFetchCommand;
 import org.jcommit.commands.git.help.GitHelpCommand;
@@ -274,6 +275,28 @@ public final class Context {
 
             if (result.getExitCode() != 0)
                 throw new RuntimeException("Git exited with error code");
+        } catch (Exception exception) {
+            GuiUtil.popupError(exception.getMessage());
+        }
+
+        fetchStatus();
+    }
+
+    public void checkoutBranch(String branchName) {
+        if (currentProject == null)
+            return;
+
+        Log.info("Checkout branch " + branchName);
+
+        final File executionPath = currentProject.getFile();
+        final GitCheckoutCommand checkoutCommand = new GitCheckoutCommand(executionPath,
+            branchName);
+
+        try {
+            final CommandResult result = checkoutCommand.execute();
+
+            if (result.getExitCode() != 0)
+                throw new RuntimeException("Could not check out branch " + branchName);
         } catch (Exception exception) {
             GuiUtil.popupError(exception.getMessage());
         }

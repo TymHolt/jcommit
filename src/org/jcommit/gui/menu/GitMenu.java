@@ -1,10 +1,12 @@
 package org.jcommit.gui.menu;
 
+import org.jcommit.Log;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.MainView;
 import org.jcommit.gui.components.ThemedMenu;
 import org.jcommit.gui.components.ThemedMenuItem;
+import org.jcommit.gui.popup.CheckoutPopup;
 import org.jcommit.gui.popup.PushPopup;
 import org.jcommit.gui.theme.Theme;
 import org.jcommit.gui.util.GuiUtil;
@@ -95,6 +97,48 @@ public final class GitMenu extends ThemedMenu {
             this.context.pull();
         });
         addItem(pullItem);
+
+        // ------------------------------------------------------------
+
+        addSeparator();
+
+        // ------------------------------------------------------------
+
+        final JMenu checkoutMenu = new ThemedMenu("Checkout", theme);
+
+        final JMenuItem localItem = new ThemedMenuItem("Local...", theme);
+        localItem.addActionListener(actionEvent -> {
+            final CheckoutPopup checkoutPopup = new CheckoutPopup(mainView,
+                "Checkout local branch",
+                this.context.getCurrentProject().getBranchAllResult().getLocalBranches());
+
+            if (checkoutPopup.wasCanceled())
+                return;
+
+            this.context.checkoutBranch(checkoutPopup.getSelectedBranchName());
+        });
+        checkoutMenu.add(localItem);
+
+        final JMenuItem remoteItem = new ThemedMenuItem("Remote...", theme);
+        remoteItem.addActionListener(actionEvent -> {
+            final CheckoutPopup checkoutPopup = new CheckoutPopup(mainView,
+                "Checkout remote branch",
+                this.context.getCurrentProject().getBranchAllResult().getRemoteBranches());
+
+            if (checkoutPopup.wasCanceled())
+                return;
+
+            final String remoteBranch = checkoutPopup.getSelectedBranchName();
+            final int substringIndex = remoteBranch.indexOf('/');
+            // indexOf returns -1 if none was found, prevent exception
+            final String branchName =
+                substringIndex >= 0 ? remoteBranch.substring(substringIndex + 1) : remoteBranch;
+
+            this.context.checkoutBranch(branchName);
+        });
+        checkoutMenu.add(remoteItem);
+
+        addItem(checkoutMenu);
     }
 
     private void addItem(JMenuItem item) {

@@ -6,13 +6,10 @@ import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.theme.Theme;
-import org.jcommit.gui.util.GuiUtil;
 import org.jcommit.util.ListUtil;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +17,7 @@ final class StageControlPanel extends JPanel {
 
     private final Context context;
     private final JPanel actionPanel;
-    private JComboBox<String> branchSelection;
+    private BranchSelectionComponent branchSelection;
     private final StagePanel unstagedPanel;
     private final StagePanel stagedPanel;
     private final JSplitPane splitPane;
@@ -37,8 +34,7 @@ final class StageControlPanel extends JPanel {
         this.actionPanel.setLayout(new BorderLayout());
         this.actionPanel.setBackground(theme.getBackgroundMain());
 
-        this.branchSelection = new JComboBox<>(new String[] {"<No branch>"});
-        this.branchSelection.setEnabled(false); // No switching branches yet
+        this.branchSelection = new BranchSelectionComponent(context);
         this.actionPanel.add(this.branchSelection, BorderLayout.LINE_END);
 
         add(this.actionPanel, BorderLayout.PAGE_START);
@@ -116,9 +112,8 @@ final class StageControlPanel extends JPanel {
         final String[] branches = ListUtil.listToArray(branchesList);
 
         this.actionPanel.remove(this.branchSelection);
-        this.branchSelection = new JComboBox<>(branches);
-        this.branchSelection.setEnabled(false); // No switching branches yet
-        this.branchSelection.setSelectedItem(branchResult.getCurrentBranch());
+        this.branchSelection = new BranchSelectionComponent(branches, context);
+        this.branchSelection.showSelectedBranchName(branchResult.getCurrentBranch());
         this.actionPanel.add(this.branchSelection, BorderLayout.LINE_END);
     }
 
