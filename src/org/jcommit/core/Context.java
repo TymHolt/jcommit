@@ -39,6 +39,7 @@ public final class Context {
 
         // Determine theme at startup, so changes only take effect after restart
         this.theme = this.settings.getUseDarkTheme() ? new DarkTheme() : new LightTheme();
+        Theme.applyTheme(this.theme);
         this.mainView = new MainView(this);
         this.mainView.initGui();
 

@@ -4,64 +4,108 @@ import java.awt.*;
 
 public final class LightTheme implements Theme {
 
-    private static final Color BACKGROUND_MAIN = new Color(245, 245, 245);     // sehr helles Grau
-    private static final Color BACKGROUND_PANEL = new Color(235, 235, 235);   // leicht dunkler für Panels
-    private static final Color TEXT_PRIMARY = new Color(33, 33, 33);          // fast schwarz
-    private static final Color TEXT_SECONDARY = new Color(85, 85, 85);        // mittleres Grau
-    private static final Color ACCENT = new Color(0, 173, 181);               // Türkis wie im Dark Theme
-    private static final Color HOVER = new Color(8, 199, 206);                // helleres Türkis
-    private static final Color WARNING = new Color(230, 74, 25);              // etwas dunkleres Orange
-    private static final Color SUCCESS = new Color(56, 142, 60);              // satteres Grün
-    private static final Color INACTIVE = new Color(180, 180, 180);           // hellgrau für Disabled-Zustände
-    private static final Color SEPARATION = new Color(200, 200, 200);         // zarte Trennlinien
-
     @Override
-    public Color getBackgroundMain() {
-        return BACKGROUND_MAIN;
+    public Color getControl() {
+        return null;
     }
 
     @Override
-    public Color getBackgroundPanel() {
-        return BACKGROUND_PANEL;
+    public Color getPanelBackground() {
+        return null;
     }
 
     @Override
-    public Color getTextPrimary() {
-        return TEXT_PRIMARY;
+    public Color getText() {
+        return null;
     }
 
     @Override
-    public Color getTextSecondary() {
-        return TEXT_SECONDARY;
+    public Color getLabelForeground() {
+        return null;
     }
 
     @Override
-    public Color getAccent() {
-        return ACCENT;
+    public Color getButtonBackground() {
+        return null;
     }
 
     @Override
-    public Color getHover() {
-        return HOVER;
+    public Color getButtonForeground() {
+        return null;
     }
 
     @Override
-    public Color getWarning() {
-        return WARNING;
+    public Color getButtonFocus() {
+        return null;
     }
 
     @Override
-    public Color getSuccess() {
-        return SUCCESS;
+    public Color getTextFieldBackground() {
+        return null;
     }
 
     @Override
-    public Color getInactive() {
-        return INACTIVE;
+    public Color getTextFieldForeground() {
+        return null;
     }
 
     @Override
-    public Color getSeparation() {
-        return SEPARATION;
+    public Color getTextFieldCaretForeground() {
+        return null;
+    }
+
+    @Override
+    public Color getTextFieldSelectionBackground() {
+        return null;
+    }
+
+    @Override
+    public Color getTableBackground() {
+        return null;
+    }
+
+    @Override
+    public Color getTableForeground() {
+        return null;
+    }
+
+    @Override
+    public Color getTableSelectionBackground() {
+        return null;
+    }
+
+    @Override
+    public Color getToolTipBackground() {
+        return null;
+    }
+
+    @Override
+    public Color getToolTipForeground() {
+        return null;
+    }
+
+    @Override
+    public Color getMenuForeground() {
+        return null;
+    }
+
+    @Override
+    public Color getMenuBackground() {
+        return null;
+    }
+
+    @Override
+    public Color getMenuItemSelectionBackground() {
+        return null;
+    }
+
+    @Override
+    public Color getTabbedPaneBackground() {
+        return null;
+    }
+
+    @Override
+    public Color getTabbedPaneSelected() {
+        return null;
     }
 }

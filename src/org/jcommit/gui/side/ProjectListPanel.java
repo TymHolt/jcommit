@@ -37,7 +37,6 @@ public final class ProjectListPanel extends JPanel {
         this.context = context;
         this.projectEntryPanels = new HashMap<>();
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        setBackground(context.getTheme().getBackgroundMain());
     }
 
     public void notifyOpenProject(Project project) {

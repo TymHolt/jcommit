@@ -7,11 +7,8 @@ import org.jcommit.commands.git.init.GitInitCommand;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.MainView;
-import org.jcommit.gui.components.ThemedMenu;
-import org.jcommit.gui.components.ThemedMenuItem;
 import org.jcommit.gui.popup.ClonePopup;
 import org.jcommit.gui.popup.NewPopup;
-import org.jcommit.gui.theme.Theme;
 import org.jcommit.gui.util.FileSelectionOption;
 import org.jcommit.gui.util.FileSelectionResult;
 import org.jcommit.gui.util.GuiUtil;
@@ -19,16 +16,15 @@ import org.jcommit.gui.util.GuiUtil;
 import javax.swing.*;
 import java.io.File;
 
-public final class ProjectMenu extends ThemedMenu {
+public final class ProjectMenu extends JMenu {
 
     public ProjectMenu(MainView mainView) {
-        super("Project", mainView.getContext().getTheme());
+        super("Project");
         final Context context = mainView.getContext();
-        final Theme theme = context.getTheme();
 
         // ------------------------------------------------------------
 
-        final JMenuItem newItem = new ThemedMenuItem("New...", theme);
+        final JMenuItem newItem = new JMenuItem("New...");
         newItem.addActionListener(actionEvent -> {
             final NewPopup newPopup = new NewPopup(mainView, "New project");
             if (newPopup.wasCanceled())
@@ -66,7 +62,7 @@ public final class ProjectMenu extends ThemedMenu {
 
         // ------------------------------------------------------------
 
-        final JMenuItem openItem = new ThemedMenuItem("Open...", theme);
+        final JMenuItem openItem = new JMenuItem("Open...");
         openItem.addActionListener(actionEvent -> {
             final FileSelectionResult fileSelectionResult = GuiUtil.popupSelectDirectory(
                 "Open project");
@@ -87,7 +83,7 @@ public final class ProjectMenu extends ThemedMenu {
 
         // ------------------------------------------------------------
 
-        final JMenuItem cloneItem = new ThemedMenuItem("Clone...", theme);
+        final JMenuItem cloneItem = new JMenuItem("Clone...");
         cloneItem.addActionListener(actionEvent -> {
             final ClonePopup clonePopup = new ClonePopup(mainView, "Clone project");
             if (clonePopup.wasCanceled())
