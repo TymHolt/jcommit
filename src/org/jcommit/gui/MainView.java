@@ -1,5 +1,6 @@
 package org.jcommit.gui;
 
+import org.jcommit.Log;
 import org.jcommit.Main;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
@@ -11,6 +12,7 @@ import org.jcommit.gui.side.ProjectListPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 public final class MainView extends JFrame {
 
@@ -48,6 +50,18 @@ public final class MainView extends JFrame {
             this.projectListPanel, this.centerPanel);
         splitPane.setDividerLocation(getWidth() / 5);
         add(splitPane, BorderLayout.CENTER);
+
+        // ------------------------------------------------------------
+
+        try {
+            final URL iconUrl = getClass().getResource("/org/jcommit/gui/resource/icon.png");
+            if (iconUrl == null)
+                throw new RuntimeException("Icon path could not be resolved");
+
+            setIconImage(new ImageIcon(iconUrl).getImage());
+        } catch (Exception exception) {
+            Log.error("Icon could not be loaded: " + exception.getMessage());
+        }
 
         // ------------------------------------------------------------
 
