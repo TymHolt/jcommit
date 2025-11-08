@@ -34,7 +34,7 @@ public final class CustomSplitPaneUI extends BasicSplitPaneUI {
                 graphics.fillRect(0, 0, width, height);
 
                 // Draw foreground
-                graphics.setColor(theme.getBackgroundLight());
+                graphics.setColor(theme.getBorder());
                 final int thickness = 2;
                 if (splitPane.getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
                     final int mid = width / 2;
