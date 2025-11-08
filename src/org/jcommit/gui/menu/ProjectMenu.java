@@ -7,11 +7,8 @@ import org.jcommit.commands.git.init.GitInitCommand;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.MainView;
-import org.jcommit.gui.components.ThemedMenu;
-import org.jcommit.gui.components.ThemedMenuItem;
 import org.jcommit.gui.popup.ClonePopup;
 import org.jcommit.gui.popup.NewPopup;
-import org.jcommit.gui.theme.Theme;
 import org.jcommit.gui.util.FileSelectionOption;
 import org.jcommit.gui.util.FileSelectionResult;
 import org.jcommit.gui.util.GuiUtil;
@@ -19,16 +16,15 @@ import org.jcommit.gui.util.GuiUtil;
 import javax.swing.*;
 import java.io.File;
 
-public final class ProjectMenu extends ThemedMenu {
+public final class ProjectMenu extends JMenu {
 
     public ProjectMenu(MainView mainView) {
-        super("Project", mainView.getContext().getTheme());
+        super("Project");
         final Context context = mainView.getContext();
-        final Theme theme = context.getTheme();
 
         // ------------------------------------------------------------
 
-        final JMenuItem newItem = new ThemedMenuItem("New...", theme);
+        final JMenuItem newItem = new JMenuItem("New...");
         newItem.addActionListener(actionEvent -> {
             final NewPopup newPopup = new NewPopup(mainView, "New project");
             if (newPopup.wasCanceled())
@@ -37,7 +33,7 @@ public final class ProjectMenu extends ThemedMenu {
             final File projectFile = newPopup.getProjectDirectory();
             if (projectFile == null || !projectFile.isDirectory() ||
                 !projectFile.exists()) {
-                GuiUtil.popupError("No directory selected");
+                GuiUtil.popupError(mainView, "No directory selected");
                 return;
             }
 
@@ -51,11 +47,11 @@ public final class ProjectMenu extends ThemedMenu {
                 if (result.getExitCode() != 0)
                     throw new RuntimeException("Git exited with error code");
             } catch (Exception exception) {
-                GuiUtil.popupError(exception.getMessage());
+                GuiUtil.popupError(mainView, exception.getMessage());
             }
 
             if (!Project.canBeProject(projectFile)) {
-                GuiUtil.popupInfo("File could not be opened as project");
+                GuiUtil.popupInfo(mainView, "File could not be opened as project");
                 return;
             }
 
@@ -66,7 +62,7 @@ public final class ProjectMenu extends ThemedMenu {
 
         // ------------------------------------------------------------
 
-        final JMenuItem openItem = new ThemedMenuItem("Open...", theme);
+        final JMenuItem openItem = new JMenuItem("Open...");
         openItem.addActionListener(actionEvent -> {
             final FileSelectionResult fileSelectionResult = GuiUtil.popupSelectDirectory(
                 "Open project");
@@ -76,7 +72,7 @@ public final class ProjectMenu extends ThemedMenu {
 
             final File projectFile = fileSelectionResult.getFile();
             if (!Project.canBeProject(projectFile)) {
-                GuiUtil.popupInfo("File can not be opened as project");
+                GuiUtil.popupInfo(mainView, "File can not be opened as project");
                 return;
             }
 
@@ -87,7 +83,7 @@ public final class ProjectMenu extends ThemedMenu {
 
         // ------------------------------------------------------------
 
-        final JMenuItem cloneItem = new ThemedMenuItem("Clone...", theme);
+        final JMenuItem cloneItem = new JMenuItem("Clone...");
         cloneItem.addActionListener(actionEvent -> {
             final ClonePopup clonePopup = new ClonePopup(mainView, "Clone project");
             if (clonePopup.wasCanceled())
@@ -96,7 +92,7 @@ public final class ProjectMenu extends ThemedMenu {
             final File parentDirectory = clonePopup.getParentDirectory();
             if (parentDirectory == null || !parentDirectory.isDirectory() ||
                 !parentDirectory.exists()) {
-                GuiUtil.popupError("No directory selected");
+                GuiUtil.popupError(mainView, "No directory selected");
                 return;
             }
 
@@ -111,7 +107,7 @@ public final class ProjectMenu extends ThemedMenu {
                 if (result.getExitCode() != 0)
                     throw new RuntimeException("Git exited with error code");
             } catch (Exception exception) {
-                GuiUtil.popupError(exception.getMessage());
+                GuiUtil.popupError(mainView, exception.getMessage());
             }
 
             final String projectName = getProjectNameFromUrl(url);
@@ -119,7 +115,7 @@ public final class ProjectMenu extends ThemedMenu {
             final File projectFile = new File(projectPath);
 
             if (!Project.canBeProject(projectFile)) {
-                GuiUtil.popupInfo("File could not be opened as project");
+                GuiUtil.popupInfo(mainView, "File could not be opened as project");
                 return;
             }
 

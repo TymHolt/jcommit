@@ -4,7 +4,6 @@ import org.jcommit.Main;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.center.MainViewCenterPanel;
-import org.jcommit.gui.components.ThemedMenuBar;
 import org.jcommit.gui.menu.GitMenu;
 import org.jcommit.gui.menu.HelpMenu;
 import org.jcommit.gui.menu.ProjectMenu;
@@ -32,7 +31,7 @@ public final class MainView extends JFrame {
 
         // ------------------------------------------------------------
 
-        final JMenuBar menuBar = new ThemedMenuBar(this.context.getTheme());
+        final JMenuBar menuBar = new JMenuBar();
 
         menuBar.add(new ProjectMenu(this));
         this.gitMenu = new GitMenu(this);

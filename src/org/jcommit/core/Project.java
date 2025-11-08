@@ -43,7 +43,8 @@ public final class Project {
             if (statusResult.getCommandResult().getExitCode() != 0)
                 throw new RuntimeException("Git exit with error code");
         } catch (Exception exception) {
-            GuiUtil.popupError(exception.getMessage());
+            // TODO Can this be outsourced so we have a parent?
+            GuiUtil.popupError(null, exception.getMessage());
             this.statusResult = null;
         }
     }
@@ -57,7 +58,8 @@ public final class Project {
             if (statusResult.getCommandResult().getExitCode() != 0)
                 throw new RuntimeException("Git exit with error code");
         } catch (Exception exception) {
-            GuiUtil.popupError(exception.getMessage());
+            // TODO Can this be outsourced so we have a parent?
+            GuiUtil.popupError(null, exception.getMessage());
             this.branchAllResult = null;
         }
     }

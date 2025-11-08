@@ -10,8 +10,8 @@ import org.jcommit.commands.git.help.GitHelpCommand;
 import org.jcommit.commands.git.pull.GitPullCommand;
 import org.jcommit.commands.git.push.GitPushUCommand;
 import org.jcommit.commands.git.restore.GitRestoreCommand;
-import org.jcommit.gui.theme.DarkTheme;
-import org.jcommit.gui.theme.LightTheme;
+import org.jcommit.gui.theme.themes.DarkTheme;
+import org.jcommit.gui.theme.themes.LightTheme;
 import org.jcommit.gui.theme.Theme;
 import org.jcommit.gui.util.GuiUtil;
 import org.jcommit.gui.MainView;
@@ -39,6 +39,7 @@ public final class Context {
 
         // Determine theme at startup, so changes only take effect after restart
         this.theme = this.settings.getUseDarkTheme() ? new DarkTheme() : new LightTheme();
+        Theme.applyTheme(this.theme);
         this.mainView = new MainView(this);
         this.mainView.initGui();
 
@@ -48,7 +49,7 @@ public final class Context {
             if (exitCode != 0)
                 throw new RuntimeException("Git could not be run");
         } catch (Exception e) {
-            GuiUtil.popupError("Failed to find working git installation");
+            GuiUtil.popupError(this.mainView, "Failed to find working git installation");
         }
 
         loadOpenedProjects();
@@ -175,7 +176,7 @@ public final class Context {
             if (result.getExitCode() != 0)
                 throw new RuntimeException("Git exited with error code");
         } catch (Exception exception) {
-            GuiUtil.popupError(exception.getMessage());
+            GuiUtil.popupError(this.mainView, exception.getMessage());
         }
 
         fetchStatus();
@@ -195,7 +196,7 @@ public final class Context {
             if (result.getExitCode() != 0)
                 throw new RuntimeException("Git exited with error code");
         } catch (Exception exception) {
-            GuiUtil.popupError(exception.getMessage());
+            GuiUtil.popupError(this.mainView, exception.getMessage());
         }
 
         fetchStatus();
@@ -214,7 +215,7 @@ public final class Context {
             if (result.getExitCode() != 0)
                 throw new RuntimeException("Git exited with error code");
         } catch (Exception exception) {
-            GuiUtil.popupError(exception.getMessage());
+            GuiUtil.popupError(this.mainView, exception.getMessage());
         }
 
         fetchStatus();
@@ -236,7 +237,7 @@ public final class Context {
             if (result.getExitCode() != 0)
                 throw new RuntimeException("Git exited with error code");
         } catch (Exception exception) {
-            GuiUtil.popupError(exception.getMessage());
+            GuiUtil.popupError(this.mainView, exception.getMessage());
         }
 
         fetchStatus();
@@ -257,7 +258,7 @@ public final class Context {
             if (result.getExitCode() != 0)
                 throw new RuntimeException("Git exited with error code");
         } catch (Exception exception) {
-            GuiUtil.popupError(exception.getMessage());
+            GuiUtil.popupError(this.mainView, exception.getMessage());
         }
 
         fetchStatus();
@@ -276,7 +277,7 @@ public final class Context {
             if (result.getExitCode() != 0)
                 throw new RuntimeException("Git exited with error code");
         } catch (Exception exception) {
-            GuiUtil.popupError(exception.getMessage());
+            GuiUtil.popupError(this.mainView, exception.getMessage());
         }
 
         fetchStatus();
@@ -298,7 +299,7 @@ public final class Context {
             if (result.getExitCode() != 0)
                 throw new RuntimeException("Could not check out branch " + branchName);
         } catch (Exception exception) {
-            GuiUtil.popupError(exception.getMessage());
+            GuiUtil.popupError(this.mainView, exception.getMessage());
         }
 
         fetchStatus();

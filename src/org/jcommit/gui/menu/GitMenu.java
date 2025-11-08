@@ -1,14 +1,10 @@
 package org.jcommit.gui.menu;
 
-import org.jcommit.Log;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
 import org.jcommit.gui.MainView;
-import org.jcommit.gui.components.ThemedMenu;
-import org.jcommit.gui.components.ThemedMenuItem;
 import org.jcommit.gui.popup.CheckoutPopup;
 import org.jcommit.gui.popup.PushPopup;
-import org.jcommit.gui.theme.Theme;
 import org.jcommit.gui.util.GuiUtil;
 
 import javax.swing.*;
@@ -16,20 +12,19 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class GitMenu extends ThemedMenu {
+public final class GitMenu extends JMenu {
 
     private final Context context;
     private final List<JMenuItem> items;
 
     public GitMenu(MainView mainView) {
-        super("Git", mainView.getContext().getTheme());
+        super("Git");
         this.context = mainView.getContext();
         this.items = new ArrayList<>();
-        final Theme theme = context.getTheme();
 
         // ------------------------------------------------------------
 
-        final JMenuItem fetchItem = new ThemedMenuItem("Fetch", theme);
+        final JMenuItem fetchItem = new JMenuItem("Fetch");
         fetchItem.addActionListener(actionEvent -> {
             this.context.fetch();
         });
@@ -37,7 +32,7 @@ public final class GitMenu extends ThemedMenu {
 
         // ------------------------------------------------------------
 
-        final JMenuItem statusItem = new ThemedMenuItem("Status", theme);
+        final JMenuItem statusItem = new JMenuItem("Status");
         statusItem.addActionListener(actionEvent -> {
             this.context.fetchStatus();
         });
@@ -49,15 +44,15 @@ public final class GitMenu extends ThemedMenu {
 
         // ------------------------------------------------------------
 
-        final JMenuItem commitItem = new ThemedMenuItem("Commit...", theme);
+        final JMenuItem commitItem = new JMenuItem("Commit...");
         commitItem.addActionListener(actionEvent -> {
-            final String message = GuiUtil.popupInput("Commit message");
+            final String message = GuiUtil.popupInput(mainView, "Commit message");
 
             if (message == null)
                 return;
 
             if (message.isBlank()) {
-                GuiUtil.popupInfo("Commit message may not be blank");
+                GuiUtil.popupInfo(mainView, "Commit message may not be blank");
                 return;
             }
 
@@ -71,7 +66,7 @@ public final class GitMenu extends ThemedMenu {
 
         // ------------------------------------------------------------
 
-        final JMenuItem pushItem = new ThemedMenuItem("Push...", theme);
+        final JMenuItem pushItem = new JMenuItem("Push...");
         pushItem.addActionListener(actionEvent -> {
             final Project currentProject = this.context.getCurrentProject();
             if (currentProject == null)
@@ -92,7 +87,7 @@ public final class GitMenu extends ThemedMenu {
 
         // ------------------------------------------------------------
 
-        final JMenuItem pullItem = new ThemedMenuItem("Pull", theme);
+        final JMenuItem pullItem = new JMenuItem("Pull");
         pullItem.addActionListener(actionEvent -> {
             this.context.pull();
         });
@@ -104,9 +99,9 @@ public final class GitMenu extends ThemedMenu {
 
         // ------------------------------------------------------------
 
-        final JMenu checkoutMenu = new ThemedMenu("Checkout", theme);
+        final JMenu checkoutMenu = new JMenu("Checkout");
 
-        final JMenuItem localItem = new ThemedMenuItem("Local...", theme);
+        final JMenuItem localItem = new JMenuItem("Local...");
         localItem.addActionListener(actionEvent -> {
             final CheckoutPopup checkoutPopup = new CheckoutPopup(mainView,
                 "Checkout local branch",
@@ -119,7 +114,7 @@ public final class GitMenu extends ThemedMenu {
         });
         checkoutMenu.add(localItem);
 
-        final JMenuItem remoteItem = new ThemedMenuItem("Remote...", theme);
+        final JMenuItem remoteItem = new JMenuItem("Remote...");
         remoteItem.addActionListener(actionEvent -> {
             final CheckoutPopup checkoutPopup = new CheckoutPopup(mainView,
                 "Checkout remote branch",

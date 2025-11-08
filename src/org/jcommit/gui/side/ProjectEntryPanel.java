@@ -47,11 +47,11 @@ final class ProjectEntryPanel extends JPanel {
 
     void setHighlighted(boolean highlighted) {
         if (highlighted) {
-            setBackground(this.theme.getAccent());
-            this.nameLabel.setForeground(this.theme.getTextPrimary());
+            setBackground(this.theme.getHighlightLight());
+            this.nameLabel.setForeground(this.theme.getForegroundLight());
         } else {
-            setBackground(this.theme.getBackgroundPanel());
-            this.nameLabel.setForeground(this.theme.getTextSecondary());
+            setBackground(this.theme.getBackgroundDark());
+            this.nameLabel.setForeground(this.theme.getForegroundLight());
         }
     }
 
