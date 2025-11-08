@@ -33,7 +33,7 @@ public final class ProjectMenu extends JMenu {
             final File projectFile = newPopup.getProjectDirectory();
             if (projectFile == null || !projectFile.isDirectory() ||
                 !projectFile.exists()) {
-                GuiUtil.popupError("No directory selected");
+                GuiUtil.popupError(mainView, "No directory selected");
                 return;
             }
 
@@ -47,11 +47,11 @@ public final class ProjectMenu extends JMenu {
                 if (result.getExitCode() != 0)
                     throw new RuntimeException("Git exited with error code");
             } catch (Exception exception) {
-                GuiUtil.popupError(exception.getMessage());
+                GuiUtil.popupError(mainView, exception.getMessage());
             }
 
             if (!Project.canBeProject(projectFile)) {
-                GuiUtil.popupInfo("File could not be opened as project");
+                GuiUtil.popupInfo(mainView, "File could not be opened as project");
                 return;
             }
 
@@ -72,7 +72,7 @@ public final class ProjectMenu extends JMenu {
 
             final File projectFile = fileSelectionResult.getFile();
             if (!Project.canBeProject(projectFile)) {
-                GuiUtil.popupInfo("File can not be opened as project");
+                GuiUtil.popupInfo(mainView, "File can not be opened as project");
                 return;
             }
 
@@ -92,7 +92,7 @@ public final class ProjectMenu extends JMenu {
             final File parentDirectory = clonePopup.getParentDirectory();
             if (parentDirectory == null || !parentDirectory.isDirectory() ||
                 !parentDirectory.exists()) {
-                GuiUtil.popupError("No directory selected");
+                GuiUtil.popupError(mainView, "No directory selected");
                 return;
             }
 
@@ -107,7 +107,7 @@ public final class ProjectMenu extends JMenu {
                 if (result.getExitCode() != 0)
                     throw new RuntimeException("Git exited with error code");
             } catch (Exception exception) {
-                GuiUtil.popupError(exception.getMessage());
+                GuiUtil.popupError(mainView, exception.getMessage());
             }
 
             final String projectName = getProjectNameFromUrl(url);
@@ -115,7 +115,7 @@ public final class ProjectMenu extends JMenu {
             final File projectFile = new File(projectPath);
 
             if (!Project.canBeProject(projectFile)) {
-                GuiUtil.popupInfo("File could not be opened as project");
+                GuiUtil.popupInfo(mainView, "File could not be opened as project");
                 return;
             }
 

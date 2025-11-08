@@ -17,8 +17,9 @@ public final class SettingsPopup extends JDialog {
 
     public SettingsPopup(JFrame parent, Settings settings) {
         super(parent, "Settings", true);
+        setLocationRelativeTo(parent);
 
-        //  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+        // ------------------------------------------------------------
 
         final JPanel container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
@@ -45,12 +46,12 @@ public final class SettingsPopup extends JDialog {
         this.themeSelection.setSelectedIndex(settings.getUseDarkTheme() ? 1 : 0);
         container.add(this.themeSelection);
 
-        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        // ------------------------------------------------------------
 
         container.add(Box.createVerticalStrut(30));
         add(container, BorderLayout.CENTER);
 
-        //  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+        // ------------------------------------------------------------
 
         final ApproveCancelButtonRow buttonRow = new ApproveCancelButtonRow();
         buttonRow.setCancelOption("Cancel", actionEvent -> {
@@ -59,7 +60,8 @@ public final class SettingsPopup extends JDialog {
         buttonRow.setApproveOption("Apply", actionEvent -> {
             final boolean newUseDarkTheme = this.themeSelection.getSelectedIndex() == 1;
             if (newUseDarkTheme != settings.getUseDarkTheme())
-                GuiUtil.popupInfo("Theme changes will take effect after application restart");
+                GuiUtil.popupInfo(parent,
+                    "Theme changes will take effect after application restart");
             
             settings.setUseDarkTheme(newUseDarkTheme);
             settings.setPrintDebug(this.printDebugToggle.isSelected());
@@ -70,7 +72,7 @@ public final class SettingsPopup extends JDialog {
         });
         add(buttonRow, BorderLayout.PAGE_END);
 
-        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        // ------------------------------------------------------------
 
         pack();
         setVisible(true);

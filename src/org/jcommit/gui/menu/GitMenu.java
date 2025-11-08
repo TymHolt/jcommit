@@ -46,13 +46,13 @@ public final class GitMenu extends JMenu {
 
         final JMenuItem commitItem = new JMenuItem("Commit...");
         commitItem.addActionListener(actionEvent -> {
-            final String message = GuiUtil.popupInput("Commit message");
+            final String message = GuiUtil.popupInput(mainView, "Commit message");
 
             if (message == null)
                 return;
 
             if (message.isBlank()) {
-                GuiUtil.popupInfo("Commit message may not be blank");
+                GuiUtil.popupInfo(mainView, "Commit message may not be blank");
                 return;
             }
 
