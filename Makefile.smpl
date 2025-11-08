@@ -1,0 +1,65 @@
+goal main {
+    rm -rf out
+    mkdir -p out
+    javac -d out $(find src -name "*.java")
+    mkdir -p out/org/jcommit/gui/resource
+    cp src/org/jcommit/gui/resource/icon.png out/org/jcommit/gui/resource
+    jar cfe jcommit.jar org.jcommit.Main -C out .
+}
+
+var release_name = jcommit
+var release_version = 0.1.0
+
+goal release {
+    # Compile
+    g++ launcher/launcher.c -o jcommit -mtune=generic -march=x86-64
+    rm -rf out
+    mkdir -p out
+    javac -d out $(find src -name "*.java")
+    mkdir -p out/org/jcommit/gui/resource
+    cp src/org/jcommit/gui/resource/icon.png out/org/jcommit/gui/resource
+    jar cfe jcommit.jar org.jcommit.Main -C out .
+
+    # Create dpkg dir
+    mkdir -p %(release_name)_%(release_version)
+
+    # Put binary
+    mkdir -p %(release_name)_%(release_version)/usr
+
+    mkdir -p %(release_name)_%(release_version)/usr/local
+    mkdir -p %(release_name)_%(release_version)/usr/local/bin
+    cp jcommit %(release_name)_%(release_version)/usr/local/bin
+    cp jcommit.jar %(release_name)_%(release_version)/usr/local/bin
+
+    mkdir -p %(release_name)_%(release_version)/usr/share
+    mkdir -p %(release_name)_%(release_version)/usr/share/applications
+    echo [Desktop Entry] >> %(release_name)_%(release_version)/usr/share/applications/JCommit.desktop
+    echo Name=JCommit >> %(release_name)_%(release_version)/usr/share/applications/JCommit.desktop
+    echo Exec=/usr/local/bin/jcommit >> %(release_name)_%(release_version)/usr/share/applications/JCommit.desktop
+    echo Icon=/usr/share/applications/jcommit_icon.png >> %(release_name)_%(release_version)/usr/share/applications/JCommit.desktop
+    echo Terminal=false >> %(release_name)_%(release_version)/usr/share/applications/JCommit.desktop
+    echo Type=Application >> %(release_name)_%(release_version)/usr/share/applications/JCommit.desktop
+    cp src/org/jcommit/gui/resource/icon.png %(release_name)_%(release_version)/usr/share/applications
+    mv %(release_name)_%(release_version)/usr/share/applications/icon.png %(release_name)_%(release_version)/usr/share/applications/jcommit_icon.png
+
+    # Put control
+    mkdir %(release_name)_%(release_version)/DEBIAN
+    echo Package: %(release_name) >> %(release_name)_%(release_version)/DEBIAN/control
+    echo Version: %(release_version) >> %(release_name)_%(release_version)/DEBIAN/control
+    echo Section: base >> %(release_name)_%(release_version)/DEBIAN/control
+    echo Priority: optional >> %(release_name)_%(release_version)/DEBIAN/control
+    echo Architecture: amd64 >> %(release_name)_%(release_version)/DEBIAN/control
+    echo Maintainer: "Tim Holtkötter <timholtkoetter.com@gmail.com>" >> %(release_name)_%(release_version)/DEBIAN/control
+    echo Description: A simple git front-end >> %(release_name)_%(release_version)/DEBIAN/control
+
+    # Build dpkg
+    dpkg-deb --build %(release_name)_%(release_version)
+}
+
+goal clean {
+    rm -rf out
+    rm -rf %(release_name)_%(release_version)
+    rm -f jcommit.jar
+    rm -f jcommit
+    rm -f %(release_name)_%(release_version).deb
+}
