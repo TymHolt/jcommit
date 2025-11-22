@@ -8,13 +8,10 @@ public final class GitStatusResult {
 
     private final CommandResult commandResult;
     private final List<GitStatusFileInfo> fileInfos;
-    private final List<String> untrackedFiles;
 
-    GitStatusResult(CommandResult commandResult, List<GitStatusFileInfo> fileInfos,
-        List<String> untrackedFiles) {
+    GitStatusResult(CommandResult commandResult, List<GitStatusFileInfo> fileInfos) {
         this.commandResult = commandResult;
         this.fileInfos = fileInfos;
-        this.untrackedFiles = untrackedFiles;
     }
 
     public CommandResult getCommandResult() {
@@ -23,9 +20,5 @@ public final class GitStatusResult {
 
     public List<GitStatusFileInfo> getFileInfos() {
         return this.fileInfos;
-    }
-
-    public List<String> getUntrackedFiles() {
-        return this.untrackedFiles;
     }
 }

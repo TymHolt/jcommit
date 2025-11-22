@@ -1,26 +1,21 @@
 package org.jcommit.commands.git.status;
 
+import java.util.Objects;
+
 public final class GitStatusFileInfo {
 
-    private final String gitFilePath;
-    private final GitStatusChangeType changeType;
-    private final boolean staged;
+    public final String gitFilePath;
+    public final GitChangeType unstagedChange;
+    public final GitChangeType stagedChange;
 
-    GitStatusFileInfo(String gitFilePath, GitStatusChangeType changeType, boolean staged) {
+    GitStatusFileInfo(String gitFilePath, GitChangeType unstagedChange,
+        GitChangeType stagedChange) {
+        Objects.requireNonNull(unstagedChange, "Git file path is null");
+        Objects.requireNonNull(unstagedChange, "Unstaged change is null");
+        Objects.requireNonNull(stagedChange, "Staged change is null");
+
         this.gitFilePath = gitFilePath;
-        this.changeType = changeType;
-        this.staged = staged;
-    }
-
-    public String getGitFilePath() {
-        return this.gitFilePath;
-    }
-
-    public GitStatusChangeType getChangeType() {
-        return this.changeType;
-    }
-
-    public boolean isStaged() {
-        return this.staged;
+        this.unstagedChange = unstagedChange;
+        this.stagedChange = stagedChange;
     }
 }

@@ -15,7 +15,8 @@ public final class GitStatusCommand {
     }
 
     public GitStatusResult execute() throws IOException, InterruptedException {
-        final Command command = new Command(this.executionPath, new String[] {"git", "status"});
+        final Command command = new Command(this.executionPath, new String[] {"git", "status",
+            "--porcelain"});
         final CommandResult commandResult = command.execute();
         return new GitStatusParser(commandResult).parse();
     }

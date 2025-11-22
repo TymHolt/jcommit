@@ -1,6 +1,7 @@
 package org.jcommit.gui.center;
 
 import org.jcommit.commands.git.branch.GitBranchAllResult;
+import org.jcommit.commands.git.status.GitChangeType;
 import org.jcommit.commands.git.status.GitStatusFileInfo;
 import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.core.Context;
@@ -83,14 +84,15 @@ final class StageControlPanel extends JPanel {
         if (showProject) {
             final GitStatusResult gitStatusResult = project.getStatusResult();
             for (GitStatusFileInfo fileInfo : gitStatusResult.getFileInfos()) {
-                if (fileInfo.isStaged())
-                    stagedElements.add(fileInfo.getGitFilePath());
-                else
-                    unstagedElements.add(fileInfo.getGitFilePath());
-            }
+                if (fileInfo.unstagedChange != GitChangeType.NONE &&
+                    fileInfo.unstagedChange != GitChangeType.IGNORED)
+                    unstagedElements.add(fileInfo.gitFilePath);
 
-            for (String gitFilePath : gitStatusResult.getUntrackedFiles())
-                unstagedElements.add(gitFilePath);
+                if (fileInfo.stagedChange != GitChangeType.NONE &&
+                    fileInfo.stagedChange != GitChangeType.IGNORED &&
+                    fileInfo.stagedChange != GitChangeType.UNTRACKED)
+                    stagedElements.add(fileInfo.gitFilePath);
+            }
 
             showSelectedBranch();
         }
