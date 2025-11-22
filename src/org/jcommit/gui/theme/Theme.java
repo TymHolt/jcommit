@@ -2,6 +2,7 @@ package org.jcommit.gui.theme;
 
 import org.jcommit.gui.theme.components.CustomComboBoxUI;
 import org.jcommit.gui.theme.components.CustomPopupMenuSeparatorUI;
+import org.jcommit.gui.theme.components.CustomScrollBarUI;
 import org.jcommit.gui.theme.components.CustomSplitPaneUI;
 
 import javax.swing.*;
@@ -63,7 +64,7 @@ public interface Theme {
 
         UIManager.put("List.background", theme.getBackgroundDark());
         UIManager.put("List.foreground", theme.getForegroundLight());
-        UIManager.put("List.selectionBackground", theme.getHighlightDark());
+        UIManager.put("List.selectionBackground", theme.getHighlightLight());
         UIManager.put("List.selectionForeground", theme.getForegroundLight());
         UIManager.put("List.focusCellHighlightBorder", BorderFactory.createEmptyBorder());
         UIManager.put("List.border", BorderFactory.createMatteBorder(2, 0, 0, 0, theme.getBorder()));
@@ -97,5 +98,9 @@ public interface Theme {
         UIManager.put("CheckBox.border", BorderFactory.createLineBorder(theme.getBorder()));
         UIManager.put("CheckBox.select", theme.getHighlightLight());
         UIManager.put("CheckBox.disabledText", theme.getForegroundDark());
+
+        UIManager.put("ScrollBarUI", "org.jcommit.gui.theme.components.CustomScrollBarUI");
+        CustomScrollBarUI.setTheme(theme);
+        UIManager.put("ScrollBar.width", 12);
     }
 }
