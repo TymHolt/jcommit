@@ -1,5 +1,9 @@
 package org.jcommit.gui.center;
 
+import org.jcommit.gui.center.stagelist.StageItem;
+import org.jcommit.gui.center.stagelist.StageList;
+import org.jcommit.gui.theme.Theme;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -7,14 +11,17 @@ import java.util.List;
 
 final class StagePanel extends JPanel {
 
+    private final Theme theme;
     private final JButton selectionButton;
     private final JButton allButton;
-    private JList<String> currentListComponent;
-    private List<String> elements;
+    private JScrollPane currentScrollPane;
+    private StageList currentListComponent;
+    private List<StageItem> items;
 
-    StagePanel(String title, JButton selectionButton, JButton allButton) {
+    StagePanel(Theme theme, String title, JButton selectionButton, JButton allButton) {
         super();
         setLayout(new BorderLayout());
+        this.theme = theme;
         this.currentListComponent = null;
         this.selectionButton = selectionButton;
         this.allButton = allButton;
@@ -36,36 +43,50 @@ final class StagePanel extends JPanel {
         this.allButton.setEnabled(enabled);
     }
 
-    void setElements(List<String> elements) {
-        if (this.currentListComponent != null)
-            remove(this.currentListComponent);
+    void setElements(List<StageItem> items) {
+        if (this.currentScrollPane != null)
+            remove(this.currentScrollPane);
 
-        final DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (String element : elements) {
-            listModel.addElement(element);
-        }
-
-        final JList<String> listComponent = new JList<>(listModel);
+        final StageList listComponent = new StageList(items);
         this.currentListComponent = listComponent;
-        add(listComponent, BorderLayout.CENTER);
+        this.currentScrollPane = new JScrollPane(listComponent);
 
-        this.elements = elements;
+        final JPanel corner = new JPanel();
+        corner.setBackground(this.theme.getBackgroundDark());
+        this.currentScrollPane.setCorner(JScrollPane.LOWER_RIGHT_CORNER, corner);
+        this.currentScrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, corner);
+        this.currentScrollPane.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner);
+        this.currentScrollPane.setCorner(JScrollPane.LOWER_LEFT_CORNER, corner);
+        this.currentScrollPane.setCorner(JScrollPane.LOWER_RIGHT_CORNER, corner);
+        this.currentScrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+        add(this.currentScrollPane, BorderLayout.CENTER);
+
+        this.items = items;
 
         revalidate();
         repaint();
     }
 
     List<String> getSelectedPaths() {
-        if (this.currentListComponent == null)
-            return new ArrayList<>();
+        final List<String> pathList = new ArrayList<>();
 
-        return this.currentListComponent.getSelectedValuesList();
+        if (this.currentListComponent != null) {
+            for (StageItem item : this.currentListComponent.getSelectedValuesList())
+                pathList.add(item.gitFilePath);
+        }
+
+        return pathList;
     }
 
     List<String> getAllPaths() {
-        if (this.elements == null)
-            return new ArrayList<>();
+        final List<String> pathList = new ArrayList<>();
 
-        return this.elements;
+        if (this.items != null) {
+            for (StageItem item : this.items)
+                pathList.add(item.gitFilePath);
+        }
+
+        return pathList;
     }
 }

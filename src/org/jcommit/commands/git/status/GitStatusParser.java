@@ -1,7 +1,6 @@
 package org.jcommit.commands.git.status;
 
 import org.jcommit.commands.CommandResult;
-import org.jcommit.util.StringParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,80 +10,43 @@ final class GitStatusParser {
     private final CommandResult commandResult;
     private final String[] lines;
     private final List<GitStatusFileInfo> fileInfos;
-    private final List<String> untrackedFiles;
 
     GitStatusParser(CommandResult commandResult) {
         this.commandResult = commandResult;
-        this.lines = commandResult.getOutput().split("\n");
+
+        final String output = commandResult.getOutput();
+        if (output.isBlank())
+            this.lines = new String[0];
+        else
+            this.lines = commandResult.getOutput().split("\n");
+
         this.fileInfos = new ArrayList<>();
-        this.untrackedFiles = new ArrayList<>();
     }
 
     GitStatusResult parse() {
-        parseChanges("Changes to be committed:", true);
-        parseChanges("Changes not staged for commit:", false);
-        parseUntrackedFiles();
-        return new GitStatusResult(this.commandResult, this.fileInfos, this.untrackedFiles);
+        for (String line : lines)
+            parseLine(line);
+
+        return new GitStatusResult(this.commandResult, this.fileInfos);
     }
 
-    private void parseChanges(String blockStart, boolean stagedFlag) {
-        boolean startParsing = false;
-        for (final String line : this.lines) {
-            if (!startParsing) {
-                if (line.startsWith(blockStart))
-                    startParsing = true;
+    private void parseLine(String line) {
+        if (line.length() < 4)
+            throw new RuntimeException("Line could not be parsed: " + line);
 
-                continue;
-            }
-
-            if (StringParser.startsWithIgnoreWhitespace(line, "("))
-                continue;
-
-            if (line.isBlank())
-                return;
-
-            final StringParser stringParser = new StringParser(line);
-            stringParser.skipWhitespace();
-
-            final String changeTypePrefix = stringParser.readUntilChar(':', true);
-            final GitStatusChangeType changeType = GitStatusChangeType.getByPrefix(changeTypePrefix);
-            stringParser.skipWhitespace();
-
-            String gitFilePath = stringParser.readUntilEnd();
-
-            // When renamed, both old and new file path are displayed
-            final String pathSplitter = " -> ";
-            if (gitFilePath.contains(pathSplitter)) {
-                final String[] gitFilePaths = gitFilePath.split(pathSplitter);
-
-                if (gitFilePaths.length > 1) // Prevent out of bounds exception
-                    gitFilePath = gitFilePaths[1];
-            }
-
-            this.fileInfos.add(new GitStatusFileInfo(gitFilePath, changeType, stagedFlag));
-        }
+        final GitChangeType staged = GitChangeType.getByIdentifier(line.charAt(0));
+        final GitChangeType unstaged = GitChangeType.getByIdentifier(line.charAt(1));
+        final String fileName = parseFileName(line);
+        this.fileInfos.add(new GitStatusFileInfo(fileName, unstaged, staged));
     }
 
-    private void parseUntrackedFiles() {
-        boolean startParsing = false;
-        for (final String line : this.lines) {
-            if (!startParsing) {
-                if (line.startsWith("Untracked files:"))
-                    startParsing = true;
+    private static String parseFileName(String line) {
+        final String fileName = line.substring(3);
 
-                continue;
-            }
+        final String renameSplit = " -> ";
+        if (fileName.contains(renameSplit))
+            return fileName.split(renameSplit)[1];
 
-            if (StringParser.startsWithIgnoreWhitespace(line, "("))
-                continue;
-
-            if (line.isBlank())
-                return;
-
-            final StringParser stringParser = new StringParser(line);
-            stringParser.skipWhitespace();
-            final String gitFilePath = stringParser.readUntilEnd();
-            this.untrackedFiles.add(gitFilePath);
-        }
+        return fileName;
     }
 }

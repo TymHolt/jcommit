@@ -1,10 +1,12 @@
 package org.jcommit.gui.center;
 
 import org.jcommit.commands.git.branch.GitBranchAllResult;
+import org.jcommit.commands.git.status.GitChangeType;
 import org.jcommit.commands.git.status.GitStatusFileInfo;
 import org.jcommit.commands.git.status.GitStatusResult;
 import org.jcommit.core.Context;
 import org.jcommit.core.Project;
+import org.jcommit.gui.center.stagelist.StageItem;
 import org.jcommit.util.ListUtil;
 
 import javax.swing.*;
@@ -43,8 +45,10 @@ final class StageControlPanel extends JPanel {
         final JButton unstageButton = new JButton("Unstage");
         final JButton unstageAllButton = new JButton("Unstage all");
 
-        this.unstagedPanel = new StagePanel("Unstaged", stageButton, stageAllButton);
-        this.stagedPanel = new StagePanel("Staged", unstageButton, unstageAllButton);
+        this.unstagedPanel = new StagePanel(this.context.getTheme(), "Unstaged", stageButton,
+            stageAllButton);
+        this.stagedPanel = new StagePanel(this.context.getTheme(), "Staged", unstageButton,
+            unstageAllButton);
 
         stageButton.addActionListener(actionEvent -> {
             final List<String> paths = this.unstagedPanel.getSelectedPaths();
@@ -72,8 +76,8 @@ final class StageControlPanel extends JPanel {
     }
 
     void updateGui() {
-        final List<String> unstagedElements = new ArrayList<>();
-        final List<String> stagedElements = new ArrayList<>();
+        final List<StageItem> unstagedItems = new ArrayList<>();
+        final List<StageItem> stagedItems = new ArrayList<>();
         final Project project = this.context.getCurrentProject();
         final boolean showProject = project != null;
 
@@ -83,20 +87,25 @@ final class StageControlPanel extends JPanel {
         if (showProject) {
             final GitStatusResult gitStatusResult = project.getStatusResult();
             for (GitStatusFileInfo fileInfo : gitStatusResult.getFileInfos()) {
-                if (fileInfo.isStaged())
-                    stagedElements.add(fileInfo.getGitFilePath());
-                else
-                    unstagedElements.add(fileInfo.getGitFilePath());
-            }
+                if (fileInfo.unstagedChange != GitChangeType.NONE &&
+                    fileInfo.unstagedChange != GitChangeType.IGNORED) {
+                    unstagedItems.add(new StageItem(fileInfo.gitFilePath,
+                        fileInfo.unstagedChange));
+                }
 
-            for (String gitFilePath : gitStatusResult.getUntrackedFiles())
-                unstagedElements.add(gitFilePath);
+                if (fileInfo.stagedChange != GitChangeType.NONE &&
+                    fileInfo.stagedChange != GitChangeType.IGNORED &&
+                    fileInfo.stagedChange != GitChangeType.UNTRACKED) {
+                    stagedItems.add(new StageItem(fileInfo.gitFilePath,
+                        fileInfo.stagedChange));
+                }
+            }
 
             showSelectedBranch();
         }
 
-        this.unstagedPanel.setElements(unstagedElements);
-        this.stagedPanel.setElements(stagedElements);
+        this.unstagedPanel.setElements(unstagedItems);
+        this.stagedPanel.setElements(stagedItems);
 
         revalidate();
         repaint();

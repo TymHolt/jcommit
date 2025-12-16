@@ -22,7 +22,8 @@ public final class MainView extends JFrame {
     private final GitMenu gitMenu;
 
     public MainView(Context context) {
-        super(Main.SOFTWARE_NAME + " " + Main.getVersionName());
+        super();
+        setTitleSuffix("");
         this.context = context;
         setLayout(new BorderLayout());
 
@@ -81,7 +82,17 @@ public final class MainView extends JFrame {
 
     public void notifyMakeProjectCurrent(Project project) {
         this.projectListPanel.notifyMakeProjectCurrent(project);
+        setTitleSuffix(project.getFile().getAbsolutePath());
         updateGui();
+    }
+
+    public void setTitleSuffix(String suffix) {
+        if (suffix == null || suffix.isBlank())
+            suffix = "";
+        else
+            suffix = "   -   " + suffix;
+
+        setTitle(Main.SOFTWARE_NAME + suffix);
     }
 
     public Context getContext() {
